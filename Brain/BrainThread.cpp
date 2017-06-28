@@ -20,16 +20,17 @@ BrainThread::~BrainThread() {
 void *runBrain(void *arg)
 {
 	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
-	motion->FreeAllEngines();
+	//motion->FreeAllEngines();
 	motion->StartEngines();
 
 	cout<<"check"<<endl;
 	int center_x, center_y;
 	double distance;
-	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
+	//VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 
-//	BrainThread::GetBrainThreadInstance()->centerBall();
-	BrainThread::GetBrainThreadInstance()->lookForBall();
+//	BrainThread::GetBrainThreadInstance()->lookForBall();
+	BrainThread::GetBrainThreadInstance()->centerBall();
+//	BrainThread::GetBrainThreadInstance()->lookForBall();
 //	BrainThread::GetBrainThreadInstance()->GoToBall();
 
 //	usleep(1000000);
@@ -133,7 +134,8 @@ void BrainThread::lookForBall()
 	float pan = PANMAXRIGHT, tilt = -32;
 	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
 	motion->SetHeadTilt(HeadTilt(tilt,pan));
-	VisionThread::MillisSleep(100);
+	//usleep(1000000);
+	VisionThread::MillisSleep(8000);
 	bool going_left = true, finish_scan = false;
 	int center_x, center_y;
 	double distance;
@@ -143,38 +145,46 @@ void BrainThread::lookForBall()
 //		motion->SetHeadTilt(HeadTilt(tilt,pan));
 //		VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 //		cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
-//		//usleep(1000000*5);
+		//usleep(1000000*5);
 //
 //	}
-	//VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
-	while(1)//center_x == -1 && !finish_scan) // ball wasnt found
+	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
+	while(1)//center_x == -1 && !finish_scan) // ball wasn't found
 	{
 		if (going_left)
 		{
 			tilt = -32 + 22*sin(pan*PI/PANMAXRIGHT);
-			pan += 6;
-			if (pan == PANMAXLEFT)
+			pan += 1;
+			if (pan >= PANMAXLEFT)
+			{
 				going_left = false;
+				pan = PANMAXLEFT;
+			}
 		}
 		else
 		{
-			tilt = -32 - 22*sin(pan*PI/PANMAXRIGHT);
-			pan -= 6;
-			if (pan == PANMAXRIGHT)
+			tilt = -32 - 22*sin(pan*PI/PANMAXLEFT);
+			pan -= 1;
+			if (pan <= PANMAXRIGHT)
 			{
+				pan = PANMAXRIGHT;
 				going_left = true;
 				finish_scan = true;
 			}
 		}
 		motion->SetHeadTilt(HeadTilt(tilt,pan));
-
+		usleep(10000*5);
 		//VisionThread::MillisSleep(5);
 		VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
+		cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
 	}
 	if (center_x != -1)
-		BrainThread::GetBrainThreadInstance()->setState(WALK_TO_BALL_STATE);
+		{cout<<"check2"<<endl;
+		BrainThread::GetBrainThreadInstance()->centerBall();}
+		//BrainThread::GetBrainThreadInstance()->setState(WALK_TO_BALL_STATE);
 	else
-		BrainThread::GetBrainThreadInstance()->setState(CHANGE_SPOT_STATE);
+		cout<<"check3"<<endl;
+		//BrainThread::GetBrainThreadInstance()->setState(CHANGE_SPOT_STATE);
 	//motion->FreeAllEngines();
 }
 
@@ -198,14 +208,14 @@ void BrainThread::GoToBall()
 		double lastDistance=0;
 		//VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,lastDistance);	//Get vision variables
 
-		double pan = PANMAXRIGHT, tilt = 0;	//Delete this part when the VISION is back
-		m_Motion->SetHeadTilt(HeadTilt(tilt,pan));
+		//double pan = PANMAXRIGHT, tilt = 0;	//Delete this part when the VISION is back
+		//m_Motion->SetHeadTilt(HeadTilt(tilt,pan));
 
-		double angleToBall = m_Motion->GetHeadTilt().Pan;	//Get head position (pan)
+		double angleToBall = motion->GetHeadTilt().Pan;	//Get head position (pan)
 		//double angleToBall = 60;
 		cout<<"pan is " << angleToBall << endl;
-		m_Motion->TurnByAngle(angleToBall); //turn to ball
-		m_Motion->StartWalking(8, 0, 0);
+		motion->TurnByAngle(angleToBall); //turn to ball
+		//motion->StartWalking(8, 0, 0);
 		//motion->StartWalking(-5, 5,-12);
 		//motion->StartWalking(0, 0,-25);
 		double currentDistance = lastDistance;
@@ -221,7 +231,7 @@ void BrainThread::GoToBall()
 		if (currentDistance<=0)
 		{*/
 		VisionThread::MillisSleep(3000);
-		m_Motion->StopWalking();
+		//motion->StopWalking();
 		cout<<"end"<<endl;
 		//}
 		//motion->FreeAllEngines();
@@ -240,28 +250,43 @@ void BrainThread::kick()
 
 void BrainThread::centerBall()
 {
+	int center_x, center_y;
+	double distance;
+	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
+	motion->SetHeadTilt(HeadTilt(-10.000,-0.176));
+	cout<<"sethead"<<endl;
+	VisionThread::MillisSleep(5000);
 	while(1)
 	{
-		Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
-		int center_x, center_y;
-		double distance;
+		cout<< "blb" <<endl;
 		float tilt = motion->GetHeadTilt().Tilt;
 		float pan =	motion->GetHeadTilt().Pan;
-		VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
-		if (center_x > 337)
-			pan -= (center_x - 320)/PANMOVEMENT;
-		if (0 < center_x < 303)
-			pan += (320 - center_x)/PANMOVEMENT;
-		if (center_y > 255)
-			tilt += (center_y - 255)/TILTMOVEMENT;
-		if (0 <center_y < 225)
-			tilt -= (center_y - 225)/TILTMOVEMENT;
-		if (center_x != -1 && center_y != -1)
-			motion->SetHeadTilt(HeadTilt(tilt,pan));
-		usleep(100000);
+		cout<<"Tilt: "<<tilt<<" Pan: "<<pan<<endl;
 		VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 		cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
-		usleep(1000000*5);
+		VisionThread::MillisSleep(2000);
+		while (center_x < 290 || center_x > 350 || center_y < 210 || center_x > 270)
+		{
+			cout <<"check1"<<endl;
+			if (center_x > 337)
+				pan += (center_x - 320)/PANMOVEMENT;
+			if (0 < center_x && center_x < 303)
+				pan -= (320 - center_x)/PANMOVEMENT;
+			if (center_y > 255)
+				tilt -= (center_y - 255)/TILTMOVEMENT;
+			if (0 < center_y &&  center_y < 225)
+				tilt += (225 - center_y)/TILTMOVEMENT;
+			if (center_x != -1 && center_y != -1)
+				motion->SetHeadTilt(HeadTilt(tilt,pan));
+			cout<<"Tilt: "<<tilt<<" Pan: "<<pan<<endl;
+			VisionThread::MillisSleep(2000);
+			VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
+			cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
+		}
+		cout <<"check3"<<endl;
+
+		cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
+		VisionThread::MillisSleep(1000);
 	}
 }
 

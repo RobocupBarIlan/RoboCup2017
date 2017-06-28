@@ -171,7 +171,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 
 
 
-			int thresh = 25000;
+			int thresh = 21000;
 			Canny(frame_luminance, frame_edges, thresh, thresh * 2, 7);
 			imshow("original_frame_canny", frame_edges);
 			waitKey(1);
@@ -695,7 +695,7 @@ void BallDetector::CircleFitRansac(Mat& frame,Mat& frame_edges,vector<BallCandid
 	if(edge_points.size()>=3) //If at least 3 edge points (for circle) in frame:
 	{
 		cout<<"edge_points:"<<edge_points.size()<<endl;
-		const int NUM_ITERATIONS=500000/edge_points.size();
+		const int NUM_ITERATIONS=2000000/edge_points.size();
 		Point checked_circle_center;
 		double checked_circle_radius;
 		int num_supporting_points;

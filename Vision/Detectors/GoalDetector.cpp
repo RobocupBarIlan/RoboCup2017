@@ -271,8 +271,8 @@ void GoalDetector::GetGoalPosts(GoalCandidate& gc){
 																	}
 																}
 															}
-															if(percentage_white_pixels<0.3)
-																cout<<"percentage_white_pixels_left"<<percentage_white_pixels<<endl;
+//															if(percentage_white_pixels<0.3)
+//																cout<<"percentage_white_pixels_left"<<percentage_white_pixels<<endl;
 															percentage_white_pixels=(count_num_white_pixels_in_rect+0.0)/(aside_post_bounding_rect_mat.rows*aside_post_bounding_rect_mat.cols);
 															if(percentage_white_pixels<=PERCENTAGE_NO_WHITE_PIXELS_IN_RECT)
 															{
@@ -308,8 +308,8 @@ void GoalDetector::GetGoalPosts(GoalCandidate& gc){
 																		}
 
 																		percentage_white_pixels=(count_num_white_pixels_in_rect+0.0)/(aside_post_bounding_rect_mat.rows*aside_post_bounding_rect_mat.cols);
-																		if(percentage_white_pixels<0.3)
-																			cout<<"percentage_white_pixels_right"<<percentage_white_pixels<<endl;
+//																		if(percentage_white_pixels<0.3)
+//																			cout<<"percentage_white_pixels_right"<<percentage_white_pixels<<endl;
 																		//****************************************************************
 																		if(percentage_white_pixels<=PERCENTAGE_NO_WHITE_PIXELS_IN_RECT)
 																		{

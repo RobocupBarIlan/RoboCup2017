@@ -31,7 +31,14 @@ int main() {
 	VisionThread::GetVisionThreadInstance()->init();
 	waitRegisterSignalDone();
 	//Must sleep for 3 seconds at the beginning to let the camera warm-up:
-	VisionThread::MillisSleep(3000);
+	//VisionThread::MillisSleep(3000);
+	int center_x, center_y;
+	double distance;
+	VisionThread::MillisSleep(2000); //Sleep to clean the buffer.
+
+	//Must calibrate the ball before first run!!!:
+	//VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
+
 
 
 	//BrainThread::GetBrainThreadInstance()->init();
@@ -47,22 +54,16 @@ int main() {
 	while(1)
 	{
 //	//Getting data from the vision thread example:
-////		int center_x;
-////		int center_y;
-////		double distance;
-////		VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
-////		cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
-////		cout<<"distance:"<<distance<<endl;
+//		int center_x;
+//		int center_y;
+//		double distance;
 //
+//    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 //
-//		BallDetector::GetBallCenter(center,radius);
 
+		//GoalDetector::GetGoalPosts(gc);
+		VisionThread::SafeReadGoalInFrame(gc);
 
-//
-//		//BallDetector::CalculateDistanceToBall(radius,distance);
-//		//cout<<"distance:"<<distance<<endl;
-//
-		GoalDetector::GetGoalPosts(gc);
 //		//VisionThread::MillisSleep(100);
 //		//break;
 	}
