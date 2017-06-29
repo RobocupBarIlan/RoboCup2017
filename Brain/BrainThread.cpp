@@ -4,8 +4,9 @@
  */
 
 #include "BrainThread.h"
-
 	// Global static pointer used to ensure a single instance of the class:
+	bool BrainThread::Is_Register_Signals_Done=false;
+
 	BrainThread* BrainThread::Brain_Thread_Instance = NULL;
 BrainThread::BrainThread() {
 	m_state_name = START_STATE ;
@@ -16,9 +17,45 @@ BrainThread::~BrainThread() {
 	// TODO Auto-generated destructor stub
 }
 
+void BrainThread::RegisterSignals()
+{
+	//cout<<"BrainThread::RegisterSignals()"<<endl;
+	signal(NEW_REFEREE_MESSAGE, SignalCallbackHandler);
+	signal(TEAM_INFO_MASSEGE, SignalCallbackHandler);
+	signal(PLAYER_INFO_MASSEGE, SignalCallbackHandler);
+	Is_Register_Signals_Done = true;
+}
+
+bool BrainThread::IsRegisterSingalsDone()
+{
+	return BrainThread::Is_Register_Signals_Done;
+}
+
+void BrainThread::SignalCallbackHandler(int signum)
+{
+	//cout<<"BrainThread::SignalCallbackHandler"<<endl;
+	switch (signum)
+	{
+		break;
+	case TEAM_INFO_MASSEGE:
+		//TO DO- method that take care of referee massege/data
+		break;
+	case PLAYER_INFO_MASSEGE:
+		//TO DO- mathod that take care of referee massege/data
+		break;
+	case NEW_REFEREE_MESSAGE:
+		cout<<int(new_info.messageNumber)<<endl;
+		cout<<"NEW_REFEREE_MESSAGE"<<endl;
+
+		//TO DO- mathod that take care of referee massege/data
+		break;
+	}
+}
+
 
 void *runBrain(void *arg)
 {
+	BrainThread::RegisterSignals();
 	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
 	//motion->FreeAllEngines();
 	motion->StartEngines();

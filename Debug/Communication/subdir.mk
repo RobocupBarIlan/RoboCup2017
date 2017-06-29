@@ -4,13 +4,22 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../Communication/CommunicationThread.cpp 
+../Communication/CommunicationThread.cpp \
+../Communication/UdpListener.cpp \
+../Communication/UdpSender.cpp \
+../Communication/UdpUtils.cpp 
 
 OBJS += \
-./Communication/CommunicationThread.o 
+./Communication/CommunicationThread.o \
+./Communication/UdpListener.o \
+./Communication/UdpSender.o \
+./Communication/UdpUtils.o 
 
 CPP_DEPS += \
-./Communication/CommunicationThread.d 
+./Communication/CommunicationThread.d \
+./Communication/UdpListener.d \
+./Communication/UdpSender.d \
+./Communication/UdpUtils.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

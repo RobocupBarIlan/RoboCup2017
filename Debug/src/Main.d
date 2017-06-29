@@ -38,7 +38,17 @@ src/Main.o: ../src/Main.cpp ../src/../Vision/VisionThread.h \
  /home/robot/HROS5-Framework/Linux/include/LinuxArbotixPro.h \
  /home/robot/HROS5-Framework/Linux/include/LinuxActionScript.h \
  /home/robot/HROS5-Framework/Framework/include/JointData.h \
+ ../src/../Brain/../Communication/UdpListener.h \
+ ../src/../Brain/../Communication/../Brain/BrainThread.h \
+ ../src/../Brain/../Communication/CommUtils.h \
+ ../src/../Brain/../Communication/RoboCupGameControlData.h \
+ ../src/../Brain/../Communication/SPLCoachMessage.h \
+ ../src/../Brain/../Communication/UdpSender.h \
+ ../src/../Brain/../Communication/UdpUtils.h \
+ ../src/../Brain/../Communication/udpincludes.h \
  ../src/../Communication/CommunicationThread.h \
+ ../src/../Communication/UdpSender.h \
+ ../src/../Communication/UdpListener.h \
  ../src/../Vision/Detectors/GoalCandidate.h
 
 ../src/../Vision/VisionThread.h:
@@ -125,6 +135,26 @@ src/Main.o: ../src/Main.cpp ../src/../Vision/VisionThread.h \
 
 /home/robot/HROS5-Framework/Framework/include/JointData.h:
 
+../src/../Brain/../Communication/UdpListener.h:
+
+../src/../Brain/../Communication/../Brain/BrainThread.h:
+
+../src/../Brain/../Communication/CommUtils.h:
+
+../src/../Brain/../Communication/RoboCupGameControlData.h:
+
+../src/../Brain/../Communication/SPLCoachMessage.h:
+
+../src/../Brain/../Communication/UdpSender.h:
+
+../src/../Brain/../Communication/UdpUtils.h:
+
+../src/../Brain/../Communication/udpincludes.h:
+
 ../src/../Communication/CommunicationThread.h:
+
+../src/../Communication/UdpSender.h:
+
+../src/../Communication/UdpListener.h:
 
 ../src/../Vision/Detectors/GoalCandidate.h:

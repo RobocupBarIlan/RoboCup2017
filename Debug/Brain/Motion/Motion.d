@@ -38,7 +38,15 @@ Brain/Motion/Motion.o: ../Brain/Motion/Motion.cpp \
  ../Brain/Motion/../../Brain/../Vision/Detectors/BallCandidateRansac.h \
  ../Brain/Motion/../../Brain/../Vision/Detectors/../VisionThread.h \
  ../Brain/Motion/../../Brain/../Vision/Detectors/GoalDetector.h \
- ../Brain/Motion/../../Brain/../Vision/Detectors/GoalCandidate.h
+ ../Brain/Motion/../../Brain/../Vision/Detectors/GoalCandidate.h \
+ ../Brain/Motion/../../Brain/../Communication/UdpListener.h \
+ ../Brain/Motion/../../Brain/../Communication/../Brain/BrainThread.h \
+ ../Brain/Motion/../../Brain/../Communication/CommUtils.h \
+ ../Brain/Motion/../../Brain/../Communication/RoboCupGameControlData.h \
+ ../Brain/Motion/../../Brain/../Communication/SPLCoachMessage.h \
+ ../Brain/Motion/../../Brain/../Communication/UdpSender.h \
+ ../Brain/Motion/../../Brain/../Communication/UdpUtils.h \
+ ../Brain/Motion/../../Brain/../Communication/udpincludes.h
 
 ../Brain/Motion/Motion.h:
 
@@ -121,3 +129,19 @@ Brain/Motion/Motion.o: ../Brain/Motion/Motion.cpp \
 ../Brain/Motion/../../Brain/../Vision/Detectors/GoalDetector.h:
 
 ../Brain/Motion/../../Brain/../Vision/Detectors/GoalCandidate.h:
+
+../Brain/Motion/../../Brain/../Communication/UdpListener.h:
+
+../Brain/Motion/../../Brain/../Communication/../Brain/BrainThread.h:
+
+../Brain/Motion/../../Brain/../Communication/CommUtils.h:
+
+../Brain/Motion/../../Brain/../Communication/RoboCupGameControlData.h:
+
+../Brain/Motion/../../Brain/../Communication/SPLCoachMessage.h:
+
+../Brain/Motion/../../Brain/../Communication/UdpSender.h:
+
+../Brain/Motion/../../Brain/../Communication/UdpUtils.h:
+
+../Brain/Motion/../../Brain/../Communication/udpincludes.h:

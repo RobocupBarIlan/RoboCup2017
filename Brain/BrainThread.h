@@ -23,7 +23,7 @@
 #include <opencv2/opencv.hpp>
 #include "../Vision/VisionThread.h"
 #include "Motion/Motion.h"
-
+#include "../Communication/UdpListener.h"
 
 #define INIT_VALUE -1 //Will be used to initialize class members before running any code.
 #define NOT_FOUND_OBJECT_VALUE -1 //Will be used when no object is found. we will set the appropriate class members to -1.
@@ -51,8 +51,9 @@ private:
 	BrainThread();
 	int m_state_name;
 	Motion* m_Motion;
-
+    static bool Is_Register_Signals_Done; //A flag to indicate registering signals is done
 public:
+	enum BRAIN_THREAD_SIGNALS {NEW_REFEREE_MESSAGE=4 ,PLAYER_INFO_MASSEGE ,TEAM_INFO_MASSEGE};
 	pthread_t getBrainThread(); //Returns the brain_thread of type pthread_t class member.
 	static BrainThread* GetBrainThreadInstance(); //This method makes sure we don't create more than 1 object of this class.
 	void init(); //This method initiates the brain thread.
@@ -67,6 +68,9 @@ public:
 	void kick();
 	void changeSpot();
 	void centerBall();
+	static void RegisterSignals(); //This method registers all signals which can be sent to the brain thread.
+	static void SignalCallbackHandler(int signum); //This method handles all the possible signals which can be sent to the brain thread.
+	static bool IsRegisterSingalsDone(); //This method tells whether the RegisterSignals() method has already been called. It is crucial so we won't send signals before that is done.
 };
 
 #endif /* BRAIN_BRAINTHREAD_H_ */

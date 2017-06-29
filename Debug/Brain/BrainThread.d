@@ -37,7 +37,15 @@ Brain/BrainThread.o: ../Brain/BrainThread.cpp ../Brain/BrainThread.h \
  /home/robot/HROS5-Framework/Framework/include/ArbotixPro.h \
  /home/robot/HROS5-Framework/Linux/include/LinuxArbotixPro.h \
  /home/robot/HROS5-Framework/Linux/include/LinuxActionScript.h \
- /home/robot/HROS5-Framework/Framework/include/JointData.h
+ /home/robot/HROS5-Framework/Framework/include/JointData.h \
+ ../Brain/../Communication/UdpListener.h \
+ ../Brain/../Communication/../Brain/BrainThread.h \
+ ../Brain/../Communication/CommUtils.h \
+ ../Brain/../Communication/RoboCupGameControlData.h \
+ ../Brain/../Communication/SPLCoachMessage.h \
+ ../Brain/../Communication/UdpSender.h \
+ ../Brain/../Communication/UdpUtils.h \
+ ../Brain/../Communication/udpincludes.h
 
 ../Brain/BrainThread.h:
 
@@ -120,3 +128,19 @@ Brain/BrainThread.o: ../Brain/BrainThread.cpp ../Brain/BrainThread.h \
 /home/robot/HROS5-Framework/Linux/include/LinuxActionScript.h:
 
 /home/robot/HROS5-Framework/Framework/include/JointData.h:
+
+../Brain/../Communication/UdpListener.h:
+
+../Brain/../Communication/../Brain/BrainThread.h:
+
+../Brain/../Communication/CommUtils.h:
+
+../Brain/../Communication/RoboCupGameControlData.h:
+
+../Brain/../Communication/SPLCoachMessage.h:
+
+../Brain/../Communication/UdpSender.h:
+
+../Brain/../Communication/UdpUtils.h:
+
+../Brain/../Communication/udpincludes.h:
