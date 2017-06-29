@@ -61,13 +61,15 @@ void *runBrain(void *arg)
 	motion->StartEngines();
 	VisionThread::MillisSleep(3000);
 
-
 	cout<<"check"<<endl;
 	int center_x, center_y;
 	double distance;
 	//Must calibrate the ball before first run!!!:
+	motion->SetHeadTilt(HeadTilt(-10.000,-0.176));
+	VisionThread::MillisSleep(3000);
 	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 	//VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
+
 
 //	BrainThread::GetBrainThreadInstance()->lookForBall();
 	BrainThread::GetBrainThreadInstance()->centerBall();
@@ -107,6 +109,7 @@ void *runBrain(void *arg)
 //		}
 //	}
 		//usleep(100000000);
+	cout<<"endcenter.x: "<<center_x<<"center.y: "<<center_y<<endl;
 
 	pthread_exit(NULL);
 }
@@ -294,9 +297,6 @@ void BrainThread::centerBall()
 	int center_x, center_y;
 	double distance;
 	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
-	motion->SetHeadTilt(HeadTilt(-10.000,-0.176));
-	cout<<"sethead"<<endl;
-	VisionThread::MillisSleep(5000);
 	while(1)
 	{
 		cout<< "blb" <<endl;
@@ -305,7 +305,7 @@ void BrainThread::centerBall()
 		cout<<"Tilt: "<<tilt<<" Pan: "<<pan<<endl;
 		VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 		cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
-		VisionThread::MillisSleep(2000);
+		//VisionThread::MillisSleep(2000);
 		while (center_x < 290 || center_x > 350 || center_y < 210 || center_x > 270)
 		{
 			cout <<"check1"<<endl;
@@ -320,14 +320,14 @@ void BrainThread::centerBall()
 			if (center_x != -1 && center_y != -1)
 				motion->SetHeadTilt(HeadTilt(tilt,pan));
 			cout<<"Tilt: "<<tilt<<" Pan: "<<pan<<endl;
-			VisionThread::MillisSleep(2000);
+			VisionThread::MillisSleep(25);
 			VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 			cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
 		}
 		cout <<"check3"<<endl;
 
-		cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
-		VisionThread::MillisSleep(1000);
+		//cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
+		//VisionThread::MillisSleep(1000);
 	}
 }
 

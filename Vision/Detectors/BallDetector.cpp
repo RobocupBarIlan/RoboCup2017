@@ -171,7 +171,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 
 
 
-			int thresh = 12000;
+			int thresh = 21000;
 			Canny(frame_luminance, frame_edges, thresh, thresh * 2, 7);
 			imshow("original_frame_canny", frame_edges);
 			waitKey(1);
@@ -216,7 +216,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 			//Remove lines using HoughLines:
 
 			vector<Vec2f> lines;
-			HoughLines(frame_edges, lines, 1, CV_PI/180, 40);
+			HoughLines(frame_edges, lines, 1, CV_PI/180, 60);
 			double y_double;
 			int y;
 			float rho,theta;
@@ -323,7 +323,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 				else //If not first run - ball's calibration is already done - we can check which candidate is the ball:
 				{
 					double correlation=0;
-					const double COLORS_CORRELATION_THRESHOLD=0.7; //The minimum colors correlation required for a candidate to be considered as the ball. Heuristic.
+					const double COLORS_CORRELATION_THRESHOLD=0.8; //The minimum colors correlation required for a candidate to be considered as the ball. Heuristic.
 					const double FIELD_PIXELS_THRESHOLD=0.45; //The maximum percentage allowed of field pixels in image of candidate. Heuristic.
 					field_min_hue=MIN_GREEN_HUE;
 					field_max_hue=MAX_GREEN_HUE;
