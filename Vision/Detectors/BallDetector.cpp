@@ -171,7 +171,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 
 
 
-			int thresh = 21000;
+			int thresh = 12000;
 			Canny(frame_luminance, frame_edges, thresh, thresh * 2, 7);
 			imshow("original_frame_canny", frame_edges);
 			waitKey(1);
@@ -216,7 +216,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 			//Remove lines using HoughLines:
 
 			vector<Vec2f> lines;
-			HoughLines(frame_edges, lines, 1, CV_PI/180, 60);
+			HoughLines(frame_edges, lines, 1, CV_PI/180, 40);
 			double y_double;
 			int y;
 			float rho,theta;
@@ -323,13 +323,14 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 				else //If not first run - ball's calibration is already done - we can check which candidate is the ball:
 				{
 					double correlation=0;
-					const double COLORS_CORRELATION_THRESHOLD=0.8; //The minimum colors correlation required for a candidate to be considered as the ball. Heuristic.
+					const double COLORS_CORRELATION_THRESHOLD=0.7; //The minimum colors correlation required for a candidate to be considered as the ball. Heuristic.
 					const double FIELD_PIXELS_THRESHOLD=0.45; //The maximum percentage allowed of field pixels in image of candidate. Heuristic.
 					field_min_hue=MIN_GREEN_HUE;
 					field_max_hue=MAX_GREEN_HUE;
 					Mat candidate;
 					uint num_field_pixels;
 					double percentage_field_pixels;
+					int check=0;
 					for(uint i=0;i<found_circles.size();i++) //For each circle (from the most supported to the least - check the colors correlation):
 					{
 						//Get bounding rectangle of candidate. width and height will be -1 if the center of the ball is out of the frame!
@@ -343,9 +344,15 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 
 							BallDetector::CountNumFieldPixels(candidate,field_min_hue,field_max_hue,num_field_pixels);
 							percentage_field_pixels=num_field_pixels/(0.0+candidate.rows*candidate.cols);
-
-							if(correlation>COLORS_CORRELATION_THRESHOLD && percentage_field_pixels<=FIELD_PIXELS_THRESHOLD)
+//							if(check==0)
+//							{
+//								check++;
+//								cout<<"correlation_of_max:"<<correlation<<endl;
+//								cout<<"field_pixels:"<<percentage_field_pixels<<endl;
+//							}
+							if(correlation>=COLORS_CORRELATION_THRESHOLD && percentage_field_pixels<=FIELD_PIXELS_THRESHOLD)
 							{
+
 								//cout<<"percentage:"<<percentage_field_pixels<<endl;
 								cout<<"correlation:"<<correlation<<endl;
 								returned_center.x=found_circles[i].m_center.x;
@@ -674,7 +681,7 @@ void BallDetector::CircleFitKasa(vector<Point>& contour,Point& center, double& r
 void BallDetector::CircleFitRansac(Mat& frame,Mat& frame_edges,vector<BallCandidateRansac>& found_circles,int min_radius,int max_radius)
 {
 
-	const int THRESHOLD_DISTANCE=2; //up to 3 pixels of error between distance from checked circle's center and its center.
+	const int THRESHOLD_DISTANCE=1; //up to  pixels of error between distance from checked circle's center and its center.
 	const int SUPPORT_THRESHOLD=cvRound(PI*MIN_BALL_DIAMETER); //minimum number of edge points to support a circle.
 	int random_point_index_1;
 	int random_point_index_2;
@@ -695,7 +702,7 @@ void BallDetector::CircleFitRansac(Mat& frame,Mat& frame_edges,vector<BallCandid
 	if(edge_points.size()>=3) //If at least 3 edge points (for circle) in frame:
 	{
 		cout<<"edge_points:"<<edge_points.size()<<endl;
-		const int NUM_ITERATIONS=2000000/edge_points.size();
+		const int NUM_ITERATIONS=2500000/edge_points.size();
 		Point checked_circle_center;
 		double checked_circle_radius;
 		int num_supporting_points;

@@ -16,7 +16,7 @@
 	std::atomic<bool> VisionThread::Is_Goal_Writing_Done(false);
 	std::atomic<bool> VisionThread::IS_NO_BALL_COMPUTATION(true);
 	std::atomic<bool> VisionThread::IS_NO_GOAL_COMPUTATION(true);
-	Mat VisionThread::Frame=Mat::zeros(405,720,CV_8UC3);
+	Mat VisionThread::Frame=Mat::zeros(480,640,CV_8UC3);
 	std::atomic<bool> VisionThread::IS_PROCCESSING_IMAGE(false);
 	std::atomic<bool> VisionThread::IS_READING_FRAME(false);
 	GoalCandidate VisionThread::DetectedGoalCandidate;
@@ -33,8 +33,8 @@ void *runVideoCapture(void *arg)
 	VideoCapture cap; // open the default camera
 	cap.open(0);
 	cap.set(CV_CAP_PROP_FPS,50);
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, 720);
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 405);
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
 	if (!cap.isOpened())
 	{
 		cout<<"Could not open VideoCapture"<<endl;
@@ -44,8 +44,7 @@ void *runVideoCapture(void *arg)
 	Mat cleaning_frame;
 	while(true)
 	{
-		//cout<<"CAPTURING"<<endl;
-		VisionThread::MillisSleep(10);
+		VisionThread::MillisSleep(20);
 		while(VisionThread::IS_READING_FRAME)
 		{
 			cap>>cleaning_frame;
@@ -287,7 +286,7 @@ int  VisionThread::MillisSleep(long miliseconds)
 
 void VisionThread::SafeReadeCapturedFrame(Mat& captured_frame)
 {
-	captured_frame=Mat::zeros(405,720,CV_8UC3);
+	captured_frame=Mat::zeros(480,640,CV_8UC3);
 
     VisionThread::FrameReadWriteMutex.lock(); //An attempt for locking the mutex for reading the captured frame.
     IS_READING_FRAME=true;
@@ -296,7 +295,7 @@ void VisionThread::SafeReadeCapturedFrame(Mat& captured_frame)
 	{
 //		cout<<VisionThread::GetVisionThreadInstance()->Frame.rows<<" cols:"<<VisionThread::GetVisionThreadInstance()->Frame.cols<<endl;
 		flip(VisionThread::GetVisionThreadInstance()->Frame,VisionThread::GetVisionThreadInstance()->Frame,2);
-		resize(VisionThread::GetVisionThreadInstance()->Frame,VisionThread::GetVisionThreadInstance()->Frame,Size(720,405),0,0);
+		resize(VisionThread::GetVisionThreadInstance()->Frame,VisionThread::GetVisionThreadInstance()->Frame,Size(640,480),0,0);
 		captured_frame=VisionThread::GetVisionThreadInstance()->Frame.clone();
 	}
 	IS_READING_FRAME=false;

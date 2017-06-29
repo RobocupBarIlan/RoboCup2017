@@ -59,10 +59,14 @@ void *runBrain(void *arg)
 	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
 	//motion->FreeAllEngines();
 	motion->StartEngines();
+	VisionThread::MillisSleep(3000);
+
 
 	cout<<"check"<<endl;
 	int center_x, center_y;
 	double distance;
+	//Must calibrate the ball before first run!!!:
+	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 	//VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 
 //	BrainThread::GetBrainThreadInstance()->lookForBall();
