@@ -126,11 +126,13 @@ void Motion::GetUp()
 
 	if (MotionStatus::FALLEN == FORWARD)
 	{
+		VisionThread::MillisSleep(500);
 		RunAction(ActionPage::FrontGetup);// FORWARD GETUP 70
 		//printf( "Robot has fallen forward.\n");
 	}
 	else if (MotionStatus::FALLEN == BACKWARD)
 	{
+		VisionThread::MillisSleep(500);
 		RunAction(ActionPage::BackGetup);// BACKWARD GETUP 75
 		//printf( "Robot has fallen backward.\n");
 	}
