@@ -26,6 +26,7 @@ SUBDIRS := \
 Brain \
 Brain/Motion \
 Communication \
+Fallen \
 Vision/Detectors \
 Vision/Detectors/MachineLearning \
 Vision \

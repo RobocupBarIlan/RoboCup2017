@@ -258,13 +258,6 @@ void VisionThread::SafeReadGoalInFrame(GoalCandidate& gc)
 	//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 }
 
-
-
-
-
-
-
-
 int  VisionThread::MillisSleep(long miliseconds)
 {
    struct timespec req, rem;
@@ -294,7 +287,7 @@ void VisionThread::SafeReadeCapturedFrame(Mat& captured_frame)
 	if(!VisionThread::GetVisionThreadInstance()->Frame.empty())
 	{
 //		cout<<VisionThread::GetVisionThreadInstance()->Frame.rows<<" cols:"<<VisionThread::GetVisionThreadInstance()->Frame.cols<<endl;
-		flip(VisionThread::GetVisionThreadInstance()->Frame,VisionThread::GetVisionThreadInstance()->Frame,2);
+		//flip(VisionThread::GetVisionThreadInstance()->Frame,VisionThread::GetVisionThreadInstance()->Frame,2);
 		resize(VisionThread::GetVisionThreadInstance()->Frame,VisionThread::GetVisionThreadInstance()->Frame,Size(720,405),0,0);
 		captured_frame=VisionThread::GetVisionThreadInstance()->Frame.clone();
 	}

@@ -7,6 +7,9 @@ Communication/UdpListener.o: ../Communication/UdpListener.cpp \
  ../Communication/../Brain/../Vision/Detectors/../VisionThread.h \
  ../Communication/../Brain/../Vision/Detectors/GoalDetector.h \
  ../Communication/../Brain/../Vision/Detectors/GoalCandidate.h \
+ ../Communication/../Brain/../Fallen/FallenThread.h \
+ ../Communication/../Brain/../Fallen/../Brain/BrainThread.h \
+ ../Communication/../Brain/../Fallen/../Vision/VisionThread.h \
  ../Communication/../Brain/Motion/Motion.h \
  ../Communication/../Brain/Motion/MotionIncludes.h \
  /home/robot/src/RobocupBIU/RoboCup2017/Include/Includes.h \
@@ -62,6 +65,12 @@ Communication/UdpListener.o: ../Communication/UdpListener.cpp \
 ../Communication/../Brain/../Vision/Detectors/GoalDetector.h:
 
 ../Communication/../Brain/../Vision/Detectors/GoalCandidate.h:
+
+../Communication/../Brain/../Fallen/FallenThread.h:
+
+../Communication/../Brain/../Fallen/../Brain/BrainThread.h:
+
+../Communication/../Brain/../Fallen/../Vision/VisionThread.h:
 
 ../Communication/../Brain/Motion/Motion.h:
 

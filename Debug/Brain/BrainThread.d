@@ -5,7 +5,10 @@ Brain/BrainThread.o: ../Brain/BrainThread.cpp ../Brain/BrainThread.h \
  ../Brain/../Vision/Detectors/BallCandidateRansac.h \
  ../Brain/../Vision/Detectors/../VisionThread.h \
  ../Brain/../Vision/Detectors/GoalDetector.h \
- ../Brain/../Vision/Detectors/GoalCandidate.h ../Brain/Motion/Motion.h \
+ ../Brain/../Vision/Detectors/GoalCandidate.h \
+ ../Brain/../Fallen/FallenThread.h \
+ ../Brain/../Fallen/../Brain/BrainThread.h \
+ ../Brain/../Fallen/../Vision/VisionThread.h ../Brain/Motion/Motion.h \
  ../Brain/Motion/MotionIncludes.h \
  /home/robot/src/RobocupBIU/RoboCup2017/Include/Includes.h \
  /home/robot/HROS5-Framework/Framework/include/Camera.h \
@@ -62,6 +65,12 @@ Brain/BrainThread.o: ../Brain/BrainThread.cpp ../Brain/BrainThread.h \
 ../Brain/../Vision/Detectors/GoalDetector.h:
 
 ../Brain/../Vision/Detectors/GoalCandidate.h:
+
+../Brain/../Fallen/FallenThread.h:
+
+../Brain/../Fallen/../Brain/BrainThread.h:
+
+../Brain/../Fallen/../Vision/VisionThread.h:
 
 ../Brain/Motion/Motion.h:
 

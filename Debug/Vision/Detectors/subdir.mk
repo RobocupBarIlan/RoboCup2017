@@ -7,19 +7,22 @@ CPP_SRCS += \
 ../Vision/Detectors/BallCandidateRansac.cpp \
 ../Vision/Detectors/BallDetector.cpp \
 ../Vision/Detectors/GoalCandidate.cpp \
-../Vision/Detectors/GoalDetector.cpp 
+../Vision/Detectors/GoalDetector.cpp \
+../Vision/Detectors/GoalKeepersDetector.cpp 
 
 OBJS += \
 ./Vision/Detectors/BallCandidateRansac.o \
 ./Vision/Detectors/BallDetector.o \
 ./Vision/Detectors/GoalCandidate.o \
-./Vision/Detectors/GoalDetector.o 
+./Vision/Detectors/GoalDetector.o \
+./Vision/Detectors/GoalKeepersDetector.o 
 
 CPP_DEPS += \
 ./Vision/Detectors/BallCandidateRansac.d \
 ./Vision/Detectors/BallDetector.d \
 ./Vision/Detectors/GoalCandidate.d \
-./Vision/Detectors/GoalDetector.d 
+./Vision/Detectors/GoalDetector.d \
+./Vision/Detectors/GoalKeepersDetector.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

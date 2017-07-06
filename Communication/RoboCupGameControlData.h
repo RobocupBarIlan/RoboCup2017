@@ -93,7 +93,7 @@ struct RoboCupGameControlData
 {
   char header[4];               // header to identify the structure
   uint16_t version;             // version of the data structure
-  uint8_t packetNumber;         // number incremented with each packet sent (with wraparound)
+  uint8_t packetNumber;         // number incremented with each packet sent (with wrap around)
   uint8_t playersPerTeam;       // the number of players on a team
   uint8_t gameType;             // type of the game (GAME_ROUNDROBIN, GAME_PLAYOFF, GAME_DROPIN)
   uint8_t state;                // state of the game (STATE_READY, STATE_PLAYING, etc)

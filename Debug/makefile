@@ -12,6 +12,7 @@ RM := rm -rf
 -include Vision/Detectors/MachineLearning/subdir.mk
 -include Vision/Detectors/subdir.mk
 -include Vision/subdir.mk
+-include Fallen/subdir.mk
 -include Communication/subdir.mk
 -include Brain/Motion/subdir.mk
 -include Brain/subdir.mk

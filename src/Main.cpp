@@ -6,12 +6,14 @@
 
 #include <iostream>
 
+
 #include "../Vision/VisionThread.h"
 #include "../Brain/BrainThread.h"
+#include "../Fallen/FallenThread.h"
 #include "../Brain/Motion/Motion.h"
 #include "../Communication/CommunicationThread.h"
 #include "../Vision/Detectors/GoalCandidate.h"
-
+#include "../Vision/Detectors/GoalKeepersDetector.h"
 
 
 /*
@@ -19,34 +21,24 @@
  */
 void waitRegisterSignalDone()
 {
-	while (!VisionThread::IsRegisterSingalsDone()) //Wait until VisionThread registered all signal listeners.
+	while (!VisionThread::IsRegisterSingalsDone())// && !BrainThread::IsRegisterSingalsDone()) //Wait until VisionThread & BrainThread registered all signal listeners.
 	{
 	}
 }
 
-//void waitRegisterSignalDone()
-//{
-//	while (!BrainThread::IsRegisterSingalsDone() && !VisionThread::IsRegisterSingalsDone()) //Wait until VisionThread registered all signal listeners.
-//	{
-//	}
-//
-//}
-
 int main() {
 	//Motion::GetInstance()->FreeAllEngines();
-	//cout << "~~~~~~~~~~~~~~Initiating threads:~~~~~~~~~~~~~~" << endl; // prints !!!Hello World!!!
+	cout << "~~~~~~~~~~~~~~Initiating threads:~~~~~~~~~~~~~~" << endl; // prints !!!Hello World!!!
 	VisionThread::GetVisionThreadInstance()->init();
 	BrainThread::GetBrainThreadInstance()->init();
 	waitRegisterSignalDone();
-//	CommunicationThread::GetCommunicationThreadInstance()->init();
-	int center_x, center_y;
-	double distance;
-	VisionThread::MillisSleep(2000); //Sleep to clean the buffer.
-
-
-
-	//BrainThread::GetBrainThreadInstance()->init();
 	//CommunicationThread::GetCommunicationThreadInstance()->init();
+
+	//Must sleep for 3 seconds at the beginning to let the camera warm-up:
+	VisionThread::MillisSleep(3000); //Sleep to clean the buffer
+
+	//Must calibrate the ball before first run!!!:
+	//VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 
 
 //	Point center;
@@ -55,23 +47,29 @@ int main() {
 
 //	GoalCandidate gc;
 
+
+	Point g1,g2;
+//	int center_x;
+//	int center_y;
+//	double distance;
+//
 //	while(1)
 //	{
-//////	//Getting data from the vision thread example:
-//		int center_x;
-//		int center_y;
-//		double distance;
+////	//Getting data from the vision thread example:
 //
-//  	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
-//////
+//
+//    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 ////
-////		//GoalDetector::GetGoalPosts(gc);
-//////		VisionThread::SafeReadGoalInFrame(gc);
-////
-//////		//VisionThread::MillisSleep(100);
-//////		//break;
+//
+//		//GoalKeepersDetector::GetGoalKeepers(g1,g2);
+//
+//		//GoalDetector::GetGoalPosts(gc);
+////		VisionThread::SafeReadGoalInFrame(gc);
+//
+////		//VisionThread::MillisSleep(100);
+////		//break;
 //	}
-
+//
 	pthread_exit(NULL); //Exit the main thread while keeping the other threads alive.
 
 

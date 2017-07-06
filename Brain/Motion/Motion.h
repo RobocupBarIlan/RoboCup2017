@@ -51,7 +51,8 @@ public:
 	void FreeAllEngines();
 	void StartEngines();
 
-	const float factor = 1333.3333333;
+	//const float factor = 1333.3333333;
+	const float factor = 666.666665;
 
 private:
 	Motion();

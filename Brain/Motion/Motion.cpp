@@ -126,14 +126,20 @@ void Motion::GetUp()
 
 	if (MotionStatus::FALLEN == FORWARD)
 	{
-		RunAction(ActionPage::FrontGetup);// FORWARD GETUP 70
-		//printf( "Robot has fallen forward.\n");
+		VisionThread::MillisSleep(500);
+		//RunAction(ActionPage::FrontGetup);   // FORWARD GETUP 70
+		cout<<"Robot has fallen forward"<<endl;
 	}
 	else if (MotionStatus::FALLEN == BACKWARD)
 	{
-		RunAction(ActionPage::BackGetup);// BACKWARD GETUP 75
-		//printf( "Robot has fallen backward.\n");
+		VisionThread::MillisSleep(500);
+		//RunAction(ActionPage::BackGetup);   // BACKWARD GETUP 75
+		cout<<"Robot has fallen backward"<<endl;
 	}
+	//while (Action::GetInstance()->IsRunning() == 1) usleep(8000);
+	// Go back to Walk Ready
+	//mWalkReady(arbotixpro);
+	//BrainThread::GetBrainThreadInstance()->setState(GO_TO_BALL_STATE);}
 }
 
 void Motion::TurnByAngle(double angle)
@@ -141,14 +147,16 @@ void Motion::TurnByAngle(double angle)
 	if(angle == 0)
 		return;
 	else if(angle > 0)
+	{
 		StartWalking(0,0,30);
+	}
 	else if(angle < 0)
 	{
 		angle = -angle;
 		StartWalking(0,0,-30);
 	}
-	usleep(2000*1000);
-	//usleep(factor*angle*27);
+	//usleep(2000*100000);
+	usleep(factor*angle*27);
 	StopWalking();
 	SetHeadTilt(HeadTilt(GetHeadTilt().Tilt,0));
 }
@@ -170,7 +178,8 @@ void Motion::SetHeadTilt(HeadTilt headTilt)
 	Head::GetInstance()->m_Joint.SetEnableHeadOnly(true);
 	Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true);
 	Head::GetInstance()->MoveByAngle(headTilt.Pan, headTilt.Tilt);
-	//WaitForActionFinish();
+	WaitForActionFinish();
+	usleep(5000*1000);	//5 sec
 }
 
 HeadTilt Motion::GetHeadTilt()
@@ -191,15 +200,15 @@ void Motion::RunAction(ActionPage actionPage)
 void Motion::WaitForActionFinish()
 {
 	int usecondsBetweenSamples = 8*1000;
-
 	// Checks every 'usecondsBetweenSamples' if the action still running.
 	while(IsActionRunning())
 	{
 		usleep(usecondsBetweenSamples);
-	};
+	}
 }
 
 bool Motion::IsActionRunning()
 {
 	return Action::GetInstance()->IsRunning();
+
 }
