@@ -1,9 +1,9 @@
 /*
  * FallenThread.h
  *
- *  This class main purpose is to ...
+ *  This class main purpose is to indicates when the robot fall and send a proper signal to Brain thread
  * 	It provides the methods:
- *	SafeReadBallCenterInFrameAndDistance()
+ *
  */
 
 #ifndef NULL

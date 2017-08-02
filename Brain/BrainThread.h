@@ -21,10 +21,11 @@
 #include <string>
 #include <math.h>
 #include <opencv2/opencv.hpp>
+#include "../Brain/Motion/Motion.h"
 #include "../Vision/VisionThread.h"
 #include "../Fallen/FallenThread.h"
-#include "Motion/Motion.h"
 #include "../Communication/UdpListener.h"
+#include "BallFollower.h"
 
 #ifndef PI
 #define PI 3.14159265
@@ -33,7 +34,7 @@
 #define NOT_FOUND_OBJECT_VALUE -1 //Will be used when no object is found. we will set the appropriate class members to -1.
 #define START_STATE 1
 #define LOOK_FOR_BALL_STATE 2
-#define GO_TO_BALL_STATE 3
+#define WALK_TO_BALL_STATE 3
 #define LOOK_FOR_GOAL_STATE 4
 #define KICK_STATE 5
 #define CHANGE_SPOT_STATE 6
@@ -44,8 +45,8 @@
 #define PAN_MAX_RIGHT -67 // // minimum head pan
 #define NOT_FOUND_OBJECT_VALUE -1 // Will be used when no object is found. we will set the appropriate class members to -1.
 #define SINUS_CONST 2.68
-#define TILT_MOVEMENT 15;
-#define PAN_MOVEMENT 14;
+#define TILT_MOVEMENT 100;
+#define PAN_MOVEMENT 100;
 
 using namespace std;
 
@@ -57,10 +58,13 @@ private:
 	int m_state_name;
 	Motion* m_Motion;
     static bool Is_Register_Signals_Done; //A flag to indicate registering signals is done
+    int m_kick;
+    BallFollower m_follower;
+    int m_change_spot_counter;
+
     static void StateMachine(); //This method handle all states the playerRobot can be during the game.
     static void GoalKeeperStateMachine(); //This method handle all states the goalKeeperRobot can be during the game.
     static void HandleRefereeMessage(); //This method is called to handle a signal - NEW_REFEREE_MESSAGE.
-
 public:
 	enum BRAIN_THREAD_SIGNALS {NEW_REFEREE_MESSAGE=4 ,PLAYER_INFO_MESSAGE=5 ,TEAM_INFO_MESSAGE=6, FALLEN_MESSAGE=7};
 	pthread_t getBrainThread(); //Returns the brain_thread of type pthread_t class member.
@@ -70,13 +74,28 @@ public:
 	Motion* getMotion();
 	void setState(int new_state);
 	int getState();
+	void setKick(int new_kick);
+	int getKick();
 	void start();
 	void lookForBall();
-	void GoToBall();
 	void lookForGoal();
 	void kick();
 	void changeSpot();
+	void finish();
 	void centerBall();
+	void followBall();
+
+    pthread_t m_center_ball_thread; //Will control centering the ball
+    bool centerBall_thread_open = false;
+    static std::mutex WriteDetectedDataMutexBrain;  //Create a mutex for calls to the vision thread - so another thread (the brain for example) won't read wrong data - i.e to make the proccess thread-safe.
+    static std::mutex WriteDetectedDataMutexBrainCenter;
+    static int m_center_x;
+    static int m_center_y;
+    static int m_continue_center_thread;
+    static std::atomic<bool> Is_Ball_Writing_Done_Brain;
+    static std::atomic<bool> Is_Ball_Reading_Done_Brain;
+	//static std::mutex WriteDetectedDataMutex;  //Create a mutex for calls to the vision thread - so another thread (the brain for example) won't read wrong data - i.e to make the proccess thread-safe.
+	//static std::mutex FrameReadWriteMutex; //Create a mutex for reading and writing to m_frame. this should handle the data consistency issues that might occure.
 	static void RegisterSignals(); //This method registers all signals which can be sent to the brain thread.
 	static void SignalCallbackHandler(int signum); //This method handles all the possible signals which can be sent to the brain thread.
 	static bool IsRegisterSingalsDone(); //This method tells whether the RegisterSignals() method has already been called. It is crucial so we won't send signals before that is done.

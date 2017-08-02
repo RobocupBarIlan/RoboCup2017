@@ -4,12 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../Brain/BallFollower.cpp \
 ../Brain/BrainThread.cpp 
 
 OBJS += \
+./Brain/BallFollower.o \
 ./Brain/BrainThread.o 
 
 CPP_DEPS += \
+./Brain/BallFollower.d \
 ./Brain/BrainThread.d 
 
 

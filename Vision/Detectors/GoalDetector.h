@@ -23,7 +23,7 @@ using namespace std;
 #define PI 3.14159265358979 //Value of Pi (11 digits after the point). 
 #define SUB_IMAGE_HALF_WIDTH (MAX_BALL_DIAMETER-MIN_BALL_DIAMETER/2)//As we crop the image to get a sub-image(square shape) in the algorithm - we define this value to be the maximal needed half width of this image.
 #define STRUCTURE_ELEMENT_SIZE 3//The size of the structure element's matrix.
-#define BOUNDING_HORIZONTAL_LINE_FIX 30 //(At most) 30 more pixels (~6% of frame with height 480 px). will check if corners are +-40 pixels around the field's bounding horizontal line.
+#define BOUNDING_HORIZONTAL_LINE_FIX 30 //(At most) 30 more pixels (~8% of frame with height 480 px). will check if corners are +-40 pixels around the field's bounding horizontal line.
 
 
 class GoalDetector{

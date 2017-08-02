@@ -34,7 +34,6 @@ Brain/Motion/Motion.o: ../Brain/Motion/Motion.cpp \
  ../Brain/Motion/../../Brain/BrainThread.h \
  ../Brain/Motion/../../Brain/../Vision/VisionThread.h \
  ../Brain/Motion/../../Brain/../Vision/Detectors/BallDetector.h \
- ../Brain/Motion/../../Brain/../Vision/Detectors/MachineLearning/BallNeuralNet.h \
  ../Brain/Motion/../../Brain/../Vision/Detectors/BallCandidateRansac.h \
  ../Brain/Motion/../../Brain/../Vision/Detectors/../VisionThread.h \
  ../Brain/Motion/../../Brain/../Vision/Detectors/GoalDetector.h \
@@ -49,7 +48,10 @@ Brain/Motion/Motion.o: ../Brain/Motion/Motion.cpp \
  ../Brain/Motion/../../Brain/../Communication/SPLCoachMessage.h \
  ../Brain/Motion/../../Brain/../Communication/UdpSender.h \
  ../Brain/Motion/../../Brain/../Communication/UdpUtils.h \
- ../Brain/Motion/../../Brain/../Communication/udpincludes.h
+ ../Brain/Motion/../../Brain/../Communication/udpincludes.h \
+ ../Brain/Motion/../../Brain/BallFollower.h \
+ /home/robot/HROS5-Framework/Framework/include/BallTracker.h \
+ /home/robot/HROS5-Framework/Framework/include/ColorFinder.h
 
 ../Brain/Motion/Motion.h:
 
@@ -123,8 +125,6 @@ Brain/Motion/Motion.o: ../Brain/Motion/Motion.cpp \
 
 ../Brain/Motion/../../Brain/../Vision/Detectors/BallDetector.h:
 
-../Brain/Motion/../../Brain/../Vision/Detectors/MachineLearning/BallNeuralNet.h:
-
 ../Brain/Motion/../../Brain/../Vision/Detectors/BallCandidateRansac.h:
 
 ../Brain/Motion/../../Brain/../Vision/Detectors/../VisionThread.h:
@@ -154,3 +154,9 @@ Brain/Motion/Motion.o: ../Brain/Motion/Motion.cpp \
 ../Brain/Motion/../../Brain/../Communication/UdpUtils.h:
 
 ../Brain/Motion/../../Brain/../Communication/udpincludes.h:
+
+../Brain/Motion/../../Brain/BallFollower.h:
+
+/home/robot/HROS5-Framework/Framework/include/BallTracker.h:
+
+/home/robot/HROS5-Framework/Framework/include/ColorFinder.h:

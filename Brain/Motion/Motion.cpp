@@ -178,8 +178,8 @@ void Motion::SetHeadTilt(HeadTilt headTilt)
 	Head::GetInstance()->m_Joint.SetEnableHeadOnly(true);
 	Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true);
 	Head::GetInstance()->MoveByAngle(headTilt.Pan, headTilt.Tilt);
-	WaitForActionFinish();
-	usleep(5000*1000);	//5 sec
+	//WaitForActionFinish();
+
 }
 
 HeadTilt Motion::GetHeadTilt()

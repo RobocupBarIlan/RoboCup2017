@@ -4,18 +4,8 @@ Communication/CommunicationThread.o: \
  ../Communication/UdpUtils.h ../Communication/udpincludes.h \
  ../Communication/CommUtils.h ../Communication/UdpListener.h \
  ../Communication/../Brain/BrainThread.h \
- ../Communication/../Brain/../Vision/VisionThread.h \
- ../Communication/../Brain/../Vision/Detectors/BallDetector.h \
- ../Communication/../Brain/../Vision/Detectors/MachineLearning/BallNeuralNet.h \
- ../Communication/../Brain/../Vision/Detectors/BallCandidateRansac.h \
- ../Communication/../Brain/../Vision/Detectors/../VisionThread.h \
- ../Communication/../Brain/../Vision/Detectors/GoalDetector.h \
- ../Communication/../Brain/../Vision/Detectors/GoalCandidate.h \
- ../Communication/../Brain/../Fallen/FallenThread.h \
- ../Communication/../Brain/../Fallen/../Brain/BrainThread.h \
- ../Communication/../Brain/../Fallen/../Vision/VisionThread.h \
- ../Communication/../Brain/Motion/Motion.h \
- ../Communication/../Brain/Motion/MotionIncludes.h \
+ ../Communication/../Brain/../Brain/Motion/Motion.h \
+ ../Communication/../Brain/../Brain/Motion/MotionIncludes.h \
  /home/robot/src/RobocupBIU/RoboCup2017/Include/Includes.h \
  /home/robot/HROS5-Framework/Framework/include/Camera.h \
  /home/robot/HROS5-Framework/Framework/include/Point.h \
@@ -47,7 +37,19 @@ Communication/CommunicationThread.o: \
  /home/robot/HROS5-Framework/Linux/include/LinuxArbotixPro.h \
  /home/robot/HROS5-Framework/Linux/include/LinuxActionScript.h \
  /home/robot/HROS5-Framework/Framework/include/JointData.h \
+ ../Communication/../Brain/../Vision/VisionThread.h \
+ ../Communication/../Brain/../Vision/Detectors/BallDetector.h \
+ ../Communication/../Brain/../Vision/Detectors/BallCandidateRansac.h \
+ ../Communication/../Brain/../Vision/Detectors/../VisionThread.h \
+ ../Communication/../Brain/../Vision/Detectors/GoalDetector.h \
+ ../Communication/../Brain/../Vision/Detectors/GoalCandidate.h \
+ ../Communication/../Brain/../Fallen/FallenThread.h \
+ ../Communication/../Brain/../Fallen/../Brain/BrainThread.h \
+ ../Communication/../Brain/../Fallen/../Vision/VisionThread.h \
  ../Communication/../Brain/../Communication/UdpListener.h \
+ ../Communication/../Brain/BallFollower.h \
+ /home/robot/HROS5-Framework/Framework/include/BallTracker.h \
+ /home/robot/HROS5-Framework/Framework/include/ColorFinder.h \
  ../Communication/RoboCupGameControlData.h \
  ../Communication/SPLCoachMessage.h
 
@@ -65,29 +67,9 @@ Communication/CommunicationThread.o: \
 
 ../Communication/../Brain/BrainThread.h:
 
-../Communication/../Brain/../Vision/VisionThread.h:
+../Communication/../Brain/../Brain/Motion/Motion.h:
 
-../Communication/../Brain/../Vision/Detectors/BallDetector.h:
-
-../Communication/../Brain/../Vision/Detectors/MachineLearning/BallNeuralNet.h:
-
-../Communication/../Brain/../Vision/Detectors/BallCandidateRansac.h:
-
-../Communication/../Brain/../Vision/Detectors/../VisionThread.h:
-
-../Communication/../Brain/../Vision/Detectors/GoalDetector.h:
-
-../Communication/../Brain/../Vision/Detectors/GoalCandidate.h:
-
-../Communication/../Brain/../Fallen/FallenThread.h:
-
-../Communication/../Brain/../Fallen/../Brain/BrainThread.h:
-
-../Communication/../Brain/../Fallen/../Vision/VisionThread.h:
-
-../Communication/../Brain/Motion/Motion.h:
-
-../Communication/../Brain/Motion/MotionIncludes.h:
+../Communication/../Brain/../Brain/Motion/MotionIncludes.h:
 
 /home/robot/src/RobocupBIU/RoboCup2017/Include/Includes.h:
 
@@ -151,7 +133,31 @@ Communication/CommunicationThread.o: \
 
 /home/robot/HROS5-Framework/Framework/include/JointData.h:
 
+../Communication/../Brain/../Vision/VisionThread.h:
+
+../Communication/../Brain/../Vision/Detectors/BallDetector.h:
+
+../Communication/../Brain/../Vision/Detectors/BallCandidateRansac.h:
+
+../Communication/../Brain/../Vision/Detectors/../VisionThread.h:
+
+../Communication/../Brain/../Vision/Detectors/GoalDetector.h:
+
+../Communication/../Brain/../Vision/Detectors/GoalCandidate.h:
+
+../Communication/../Brain/../Fallen/FallenThread.h:
+
+../Communication/../Brain/../Fallen/../Brain/BrainThread.h:
+
+../Communication/../Brain/../Fallen/../Vision/VisionThread.h:
+
 ../Communication/../Brain/../Communication/UdpListener.h:
+
+../Communication/../Brain/BallFollower.h:
+
+/home/robot/HROS5-Framework/Framework/include/BallTracker.h:
+
+/home/robot/HROS5-Framework/Framework/include/ColorFinder.h:
 
 ../Communication/RoboCupGameControlData.h:
 

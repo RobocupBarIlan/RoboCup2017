@@ -11,7 +11,6 @@
 #include <iostream> //Only for collecting data from algorithm (log files etc...)
 #include <sstream>
 
-#include "MachineLearning/BallNeuralNet.h"
 #include "BallCandidateRansac.h"
 #include "../VisionThread.h"
 
@@ -32,13 +31,6 @@ using namespace std;
 #define SUB_IMAGE_HALF_WIDTH (MAX_BALL_DIAMETER-MIN_BALL_DIAMETER/2)//As we crop the image to get a sub-image(square shape) in the algorithm - we define this value to be the maximal needed half width of this image.
 #define STRUCTURE_ELEMENT_SIZE 3 //The size of the structure element's matrix.
 #define DEG_QUANTIZATION 361 //Discretization level of degrees.
-#define INPUT_SIZE_BALL_NEURAL_NET 3500 //The size of an input image is 35X70=2450.
-#define HIDDEN_LAYER_SIZE_BALL_NEURAL_NET 25 //Number of activation units in hidden layer.
-#define OUTPUT_SIZE_BALL_NEURAL_NET 1 //This neural network will only have 1 class for classification.
-#define PATH_INPUT_HIDDEN_WEIGHTS_BALL_NEURAL_NET "/home/robot/workspace/RoboCup2017/Vision/Detectors/MachineLearning/BallDetectorNeuralNet/weights_input_hidden_ball_detector.txt"
-#define PATH_HIDDEN_OUTPUT_WEIGHTS_BALL_NEURAL_NET "/home/robot/workspace/RoboCup2017/Vision/Detectors/MachineLearning/BallDetectorNeuralNet/weights_hidden_output_ball_detector.txt"
-#define NEURAL_NET_INPUT_IMAGE_WIDTH 70
-#define NEURAL_NET_INPUT_IMAGE_HEIGHT 50
 #define HUE_QUANTIZATION 180 //180 levels for the hue axis range - [0,179]
 
 class BallDetector{
@@ -55,9 +47,7 @@ public:
 private:
 	static bool IsFirstRun;
 	static double ball_hue_histogram[HUE_QUANTIZATION];
-	static BallNeuralNet BallDetectionNeuralNet; //This NeuralNet object holds the neural net parameters for the whole running of the program. It has the query() function which lets one ask the neural net whether a blob is a ball.
 	static void FieldCalibration(Mat& hue_matrix, uchar& field_min_hue, uchar& field_max_hue) ;
-	static void CalculateCorrelationToCircleHist(Mat bw_mat,double& correlation);
 	static void CalculateBoundingHorizontalLine(Mat& field_mat, ushort& bounding_horizontal_line);
 	static void CircleFitKasa(vector<Point>& contour,Point& center, double& radius);
 	static void CircleFitRansac(Mat& frame,Mat& frame_edges,vector<BallCandidateRansac>& found_circles,int min_radius,int max_radius); //Search for ball using the Ransac scheme.

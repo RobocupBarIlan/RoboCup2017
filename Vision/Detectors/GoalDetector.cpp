@@ -34,34 +34,58 @@ void GoalDetector::GetGoalPosts(GoalCandidate& gc){
 				{
 					for (int j = 0; j < frame.cols; j++)
 					{
-						//Check hue value against bounds:
-						if (hsv_channels[0].at<uchar>(i, j) >= field_min_hue && hsv_channels[0].at<uchar>(i, j) <= field_max_hue && hsv_channels[1].at<uchar>(i, j)>MAX_WHITE_SATURATION / 2.0)
-						{
-							field_mat.at<uchar>(i, j) = 255; //If in range (i.e- field pixel) set to 0.
-						}
+
 						//Check saturation& value against bounds:
 						if (hsv_channels[1].at<uchar>(i, j) <= MAX_WHITE_SATURATION && hsv_channels[2].at<uchar>(i, j) >= MIN_WHITE_VALUE)
 						{
 							whites_mat.at<uchar>(i, j) = 255; //If in range (i.e- white pixel) set to 11111111 in binary.
 						}
+
+						//Check hue value against bounds:
+						if (hsv_channels[0].at<uchar>(i, j) >= field_min_hue && hsv_channels[0].at<uchar>(i, j) <= field_max_hue && whites_mat.at<uchar>(i, j)==0)
+						{
+							field_mat.at<uchar>(i, j) = 255; //If in range (i.e- field pixel) set to 0.
+						}
 					}
 				}
-				medianBlur(field_mat,field_mat,5);
+//				medianBlur(field_mat,field_mat,5);
 //				imshow("field_mat", field_mat);
 //				imshow("whites_mat",whites_mat);
 //				original_field_mat = field_mat.clone(); //Will be using the original mat later on with CHT.
 //				//imshow("original_field_mat", original_field_mat);
 //				//waitKey();
 //				//Perform morphological closing to field_mat:
-				Mat structure_element_ = getStructuringElement(MORPH_RECT, Size(STRUCTURE_ELEMENT_SIZE, STRUCTURE_ELEMENT_SIZE));
+
 //				erode(field_mat, field_mat, structure_element_); //First perform erosion to remove lone points and noise
-				medianBlur(field_mat, field_mat, 7); //Median filter to remove small blocks of white in black areas and vise versa.
+
 //				structure_element_ = getStructuringElement(MORPH_ELLIPSE, Size(MIN_BALL_DIAMETER - 1, MIN_BALL_DIAMETER - 1));
 //				//Perform closing to the field_mat with circular structure element  -so we get trid of lines!-
-				dilate(field_mat, field_mat, structure_element_);
+
 //				erode(field_mat, field_mat, structure_element_);
 
 
+				int count_num_field_pixels_in_row;
+				for (int i = 0; i < field_mat.rows; i++)
+				{
+					count_num_field_pixels_in_row=0;
+					for (int j = 0; j < field_mat.cols; j++)
+					{
+						if(field_mat.at<uchar>(i,j)==255)
+						{
+							count_num_field_pixels_in_row++;
+						}
+					}
+					if(count_num_field_pixels_in_row<field_mat.cols/2) //If most of the row is not field pixels - delete all field pixels in row:
+					{
+						for(int k=0;k<field_mat.cols;k++)
+						{
+							field_mat.at<uchar>(i,k)=0;
+						}
+					}
+				}
+
+				Mat structure_element_ = getStructuringElement(MORPH_RECT, Size(2*STRUCTURE_ELEMENT_SIZE, 2*STRUCTURE_ELEMENT_SIZE));
+				dilate(field_mat, field_mat, structure_element_);
 				imshow("field_mat", field_mat);
 				waitKey(1);
 
@@ -114,12 +138,12 @@ void GoalDetector::GetGoalPosts(GoalCandidate& gc){
 				/// Parameters for Shi-Tomasi algorithm
 				const int MAX_CORNERS_DISTANCE=80; //Max width of goal post
 				vector<Point2f> corners;
-				double qualityLevel = 0.001; //Relative (to the best found corner in terms of high eigenvalues of the Harris matrix) quality of corner candidate.
+				double qualityLevel = 0.0001; //Relative (to the best found corner in terms of high eigenvalues of the Harris matrix) quality of corner candidate.
 				double minDistance = 5; //Min distance between detected corners (minimum num. of pixels between post's corners - i.e goal post width).
 				int blockSize = 3;
 				bool useHarrisDetector = false; //Use the cornerMinEigenVal() instead of corner harris.
 				double k = 0.04;
-				int maxCorners = 2000;
+				int maxCorners = 4000;
 
 				/// Copy the source image
 				Mat whites_mat_copy;
@@ -173,7 +197,7 @@ void GoalDetector::GetGoalPosts(GoalCandidate& gc){
 					{
 						corner_2_x=min(cvRound(corners[j].x),whites_mat.cols-1);
 						corner_2_y=min(cvRound(corners[j].y),whites_mat.rows-1);
-						if(corner_1_x-corner_2_x!=0 && abs(corner_1_y-bounding_horizontal_line)<=BOUNDING_HORIZONTAL_LINE_FIX && abs(corner_2_y-bounding_horizontal_line)<=BOUNDING_HORIZONTAL_LINE_FIX ) //Vertical line between edges- can't be edges of post -skip current candidate. also check for candidates only near the bounding horizontal line.
+						if(corner_1_x-corner_2_x!=0 && abs(corner_1_y-bounding_horizontal_line)<=2*BOUNDING_HORIZONTAL_LINE_FIX && abs(corner_2_y-bounding_horizontal_line)<=2*BOUNDING_HORIZONTAL_LINE_FIX ) //Vertical line between edges- can't be edges of post -skip current candidate. also check for candidates only near the bounding horizontal line.
 						{
 
 							slope=(corner_1_y-corner_2_y+0.0)/(corner_1_x-corner_2_x);
@@ -182,16 +206,13 @@ void GoalDetector::GetGoalPosts(GoalCandidate& gc){
 							if((j<i) && abs(slope)<1 && sqrt(pow(corner_1_x-corner_2_x,2)+pow(corner_1_y-corner_2_y,2))<MAX_CORNERS_DISTANCE)
 							{
 
-
-								if(abs(corner_1_x-corner_2_x)>0)
-								{
 									//Check whether there are white pixels between 2 corners and above POST_WHITE_PIXELS_CHECK_NUM_PIXELS
 									const int POST_WHITE_PIXELS_CHECK_NUM_PIXELS=30; //We check that there is a rectangle of height POST_HEIGHT_CHECK_NUM_PIXELS=60 and width abs(corner_1_x-corner_2_x) with mostly white pixels inside -to validate that there's a post:
-									const double PERCENTAGE_WHITE_PIXELS_IN_RECT=0.8; //Heuristic - the bounding rectangle must have at least 80% white pixels in it!
+									const double PERCENTAGE_WHITE_PIXELS_IN_RECT=0.7; //Heuristic - the bounding rectangle must have at least 80% white pixels in it!
 									const int POST_FIELD_PIXELS_CHECK_NUM_PIXELS=30; //We check that there is a rectangle of height POST_HEIGHT_CHECK_NUM_PIXELS=60 and width abs(corner_1_x-corner_2_x) with mostly field(green) pixels inside -to validate that there's a post:
-									const double PERCENTAGE_FIELD_PIXELS_IN_RECT=0.8 ;//Heuristic - the bounding rectangle must have at least 80% field(green) pixels in it!
+									const double PERCENTAGE_FIELD_PIXELS_IN_RECT=0.7 ;//Heuristic - the bounding rectangle must have at least 80% field(green) pixels in it!
 									const int POST_NO_WHITE_PIXELS_ASIDE_NUM_PIXELS=20;//We check that a rectangle of width POST_NO_WHITE_PIXELS_ASIDE_NUM_PIXELS to the left and right of the post candidate as no more than 20% white pixels.
-									const double PERCENTAGE_NO_WHITE_PIXELS_IN_RECT=0.15; //Heuristic- the bounding rectangle must have at most 20% white pixels in it!
+									const double PERCENTAGE_NO_WHITE_PIXELS_IN_RECT=0.3; //Heuristic- the bounding rectangle must have at most 20% white pixels in it!
 									if(!(min(corner_1_y,corner_2_y)<POST_WHITE_PIXELS_CHECK_NUM_PIXELS)) //If not enough space above higher corner to check for white pixels above - abort checking.
 									{
 										goal_post_candidate_bounding_rect.x=min(corner_1_x,corner_2_x);
@@ -334,7 +355,7 @@ void GoalDetector::GetGoalPosts(GoalCandidate& gc){
 										}
 									}
 
-								}
+
 							}
 //								if(width>0 && height>0 && idx<3000)
 //								{
@@ -446,7 +467,7 @@ void GoalDetector::FieldCalibration(Mat& hue_matrix, uchar& field_min_hue, uchar
 	int hue_histogram[HUE_DISCRETIZATION];
 	int total_num_of_green_pixels=0; //Tells how many green pixel in total range of greens as specified by MIN_GREEN_HUE & MAX_GREEN_HUE.
 	int sum_of_green_pixels_in_histogram; //Will count green pixels until we reach the threshold defined by PERCENTAGE_THRESHOLD.
-	const double PERCENTAGE_THRESHOLD = 0.97; //Determines how many green pixels we get rid of. the larger the less.
+	const double PERCENTAGE_THRESHOLD = 0.9; //Determines how many green pixels we get rid of. the larger the less.
 	const int TOTAL_NUM_OF_PIXELS = hue_matrix.cols*hue_matrix.rows;
 	const int NOT_ENOUGH_GREENS_IN_IMAGE_THRESHOLD = 0.2; //Heuristic. might be changed. if not enough green pixels we can't estimate the field!.
 	//Initialize the hue histogram with zeros:

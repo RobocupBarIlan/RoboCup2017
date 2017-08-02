@@ -5,7 +5,8 @@
 
 #include "FallenThread.h"
 
-	FallenThread* FallenThread::Fallen_Thread_Instance = NULL; // Global static pointer used to ensure a single instance of the class:
+	// Global static variables of fallenThread class:
+	FallenThread* FallenThread::Fallen_Thread_Instance = NULL;
 	bool FallenThread::Is_Register_Signals_Done=false;
 
 FallenThread::FallenThread() {
@@ -15,7 +16,6 @@ FallenThread::FallenThread() {
 FallenThread::~FallenThread() {
 	// TODO Auto-generated destructor stub
 }
-
 
 void *runFallen(void *arg)
 {
@@ -49,6 +49,7 @@ void FallenThread::init()
 		}
 	}
 }
+
 /* This function runs all the time when robot is ON and indicates
 	when it fallen to brain thread
 */
@@ -57,12 +58,13 @@ void FallenThread::IsFallen()
 	if (MotionStatus::FALLEN != STANDUP)
 	{
 		//First send signal to the brain thread - which will trigger the getUp() method.
-		//pthread_kill(BrainThread::GetBrainThreadInstance()->getBrainThread(),BrainThread::FALLEN_MESSAGE);
+		pthread_kill(BrainThread::GetBrainThreadInstance()->getBrainThread(),BrainThread::FALLEN_MESSAGE);
 		//VisionThread::MillisSleep(7000);
 		while(MotionStatus::FALLEN != STANDUP)	//Wait until get up process is done
 			VisionThread::MillisSleep(1000);
 	}
 }
+
 /*
  * Returns the fallen thread object.
  */

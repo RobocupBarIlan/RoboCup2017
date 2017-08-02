@@ -1,15 +1,6 @@
 Brain/BrainThread.o: ../Brain/BrainThread.cpp ../Brain/BrainThread.h \
- ../Brain/../Vision/VisionThread.h \
- ../Brain/../Vision/Detectors/BallDetector.h \
- ../Brain/../Vision/Detectors/MachineLearning/BallNeuralNet.h \
- ../Brain/../Vision/Detectors/BallCandidateRansac.h \
- ../Brain/../Vision/Detectors/../VisionThread.h \
- ../Brain/../Vision/Detectors/GoalDetector.h \
- ../Brain/../Vision/Detectors/GoalCandidate.h \
- ../Brain/../Fallen/FallenThread.h \
- ../Brain/../Fallen/../Brain/BrainThread.h \
- ../Brain/../Fallen/../Vision/VisionThread.h ../Brain/Motion/Motion.h \
- ../Brain/Motion/MotionIncludes.h \
+ ../Brain/../Brain/Motion/Motion.h \
+ ../Brain/../Brain/Motion/MotionIncludes.h \
  /home/robot/src/RobocupBIU/RoboCup2017/Include/Includes.h \
  /home/robot/HROS5-Framework/Framework/include/Camera.h \
  /home/robot/HROS5-Framework/Framework/include/Point.h \
@@ -41,6 +32,15 @@ Brain/BrainThread.o: ../Brain/BrainThread.cpp ../Brain/BrainThread.h \
  /home/robot/HROS5-Framework/Linux/include/LinuxArbotixPro.h \
  /home/robot/HROS5-Framework/Linux/include/LinuxActionScript.h \
  /home/robot/HROS5-Framework/Framework/include/JointData.h \
+ ../Brain/../Vision/VisionThread.h \
+ ../Brain/../Vision/Detectors/BallDetector.h \
+ ../Brain/../Vision/Detectors/BallCandidateRansac.h \
+ ../Brain/../Vision/Detectors/../VisionThread.h \
+ ../Brain/../Vision/Detectors/GoalDetector.h \
+ ../Brain/../Vision/Detectors/GoalCandidate.h \
+ ../Brain/../Fallen/FallenThread.h \
+ ../Brain/../Fallen/../Brain/BrainThread.h \
+ ../Brain/../Fallen/../Vision/VisionThread.h \
  ../Brain/../Communication/UdpListener.h \
  ../Brain/../Communication/../Brain/BrainThread.h \
  ../Brain/../Communication/CommUtils.h \
@@ -48,33 +48,15 @@ Brain/BrainThread.o: ../Brain/BrainThread.cpp ../Brain/BrainThread.h \
  ../Brain/../Communication/SPLCoachMessage.h \
  ../Brain/../Communication/UdpSender.h \
  ../Brain/../Communication/UdpUtils.h \
- ../Brain/../Communication/udpincludes.h
+ ../Brain/../Communication/udpincludes.h ../Brain/BallFollower.h \
+ /home/robot/HROS5-Framework/Framework/include/BallTracker.h \
+ /home/robot/HROS5-Framework/Framework/include/ColorFinder.h
 
 ../Brain/BrainThread.h:
 
-../Brain/../Vision/VisionThread.h:
+../Brain/../Brain/Motion/Motion.h:
 
-../Brain/../Vision/Detectors/BallDetector.h:
-
-../Brain/../Vision/Detectors/MachineLearning/BallNeuralNet.h:
-
-../Brain/../Vision/Detectors/BallCandidateRansac.h:
-
-../Brain/../Vision/Detectors/../VisionThread.h:
-
-../Brain/../Vision/Detectors/GoalDetector.h:
-
-../Brain/../Vision/Detectors/GoalCandidate.h:
-
-../Brain/../Fallen/FallenThread.h:
-
-../Brain/../Fallen/../Brain/BrainThread.h:
-
-../Brain/../Fallen/../Vision/VisionThread.h:
-
-../Brain/Motion/Motion.h:
-
-../Brain/Motion/MotionIncludes.h:
+../Brain/../Brain/Motion/MotionIncludes.h:
 
 /home/robot/src/RobocupBIU/RoboCup2017/Include/Includes.h:
 
@@ -138,6 +120,24 @@ Brain/BrainThread.o: ../Brain/BrainThread.cpp ../Brain/BrainThread.h \
 
 /home/robot/HROS5-Framework/Framework/include/JointData.h:
 
+../Brain/../Vision/VisionThread.h:
+
+../Brain/../Vision/Detectors/BallDetector.h:
+
+../Brain/../Vision/Detectors/BallCandidateRansac.h:
+
+../Brain/../Vision/Detectors/../VisionThread.h:
+
+../Brain/../Vision/Detectors/GoalDetector.h:
+
+../Brain/../Vision/Detectors/GoalCandidate.h:
+
+../Brain/../Fallen/FallenThread.h:
+
+../Brain/../Fallen/../Brain/BrainThread.h:
+
+../Brain/../Fallen/../Vision/VisionThread.h:
+
 ../Brain/../Communication/UdpListener.h:
 
 ../Brain/../Communication/../Brain/BrainThread.h:
@@ -153,3 +153,9 @@ Brain/BrainThread.o: ../Brain/BrainThread.cpp ../Brain/BrainThread.h \
 ../Brain/../Communication/UdpUtils.h:
 
 ../Brain/../Communication/udpincludes.h:
+
+../Brain/BallFollower.h:
+
+/home/robot/HROS5-Framework/Framework/include/BallTracker.h:
+
+/home/robot/HROS5-Framework/Framework/include/ColorFinder.h:

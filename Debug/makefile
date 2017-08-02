@@ -9,7 +9,6 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include src/subdir.mk
--include Vision/Detectors/MachineLearning/subdir.mk
 -include Vision/Detectors/subdir.mk
 -include Vision/subdir.mk
 -include Fallen/subdir.mk
