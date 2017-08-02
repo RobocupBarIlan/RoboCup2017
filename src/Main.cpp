@@ -61,9 +61,9 @@ int main() {
 //    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 
 //
-//		//GoalKeepersDetector::GetGoalKeepers(g1,g2);
+		GoalKeepersDetector::GetGoalKeepers(g1,g2);
 //
-		VisionThread::SafeReadGoalInFrame(gc);
+//		VisionThread::SafeReadGoalInFrame(gc);
 //
 ////		//VisionThread::MillisSleep(100);
 //		//break;

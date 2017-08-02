@@ -77,6 +77,7 @@ void mouseHandlerForOtherTeamGoalKeeperCalibration(int event, int x, int y, int 
 void GoalKeepersDetector::GetGoalKeepers(Point& ourTeamGoalKeeperXY, Point& otherTeamGoalKeeperXY)
 {
 	VisionThread::SafeReadeCapturedFrame(frame); //Read safely the captured frame.
+	GaussianBlur(frame, frame, cv::Size(3, 3), 1.5,1.5);
 	cvtColor(frame,frame_hsv,CV_BGR2HSV);
 	split(frame_hsv, hsv_channels); //Split to H,S,V channels so we can use the hue,saturation&value matrices more conveniently later on.
 	//Init values:
