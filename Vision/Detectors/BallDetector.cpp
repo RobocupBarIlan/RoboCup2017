@@ -41,7 +41,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 
 
 //	namedWindow("my_frame_check");
-	imshow("original_frame",frame);
+//	imshow("original_frame",frame);
 //	waitKey(0);
 
 //			split(frame, bgr_channels); //Split to B,G,R channels so we can manipulate the image later on.
@@ -84,9 +84,9 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 			medianBlur(field_mat,field_mat,5);
 			//imshow("frame_check", frame);
 			//waitKey(1);
-			namedWindow( "whites_mat", WINDOW_AUTOSIZE );
-			imshow("whites_mat",whites_mat);
-			waitKey(1);
+			//namedWindow( "whites_mat", WINDOW_AUTOSIZE );
+			//imshow("whites_mat",whites_mat);
+			//waitKey(1);
 			//Calculate bounding horizontal line for field in image:
 			BallDetector::CalculateBoundingHorizontalLine(field_mat, bounding_horizontal_line);
 
@@ -106,8 +106,8 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 					break;
 				}
 			}
-			imshow("field_space_mat", field_space_mat);
-			waitKey(1);
+//			imshow("field_space_mat", field_space_mat);
+//			waitKey(1);
 			//waitKey(1);
 
 
@@ -164,8 +164,8 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 			//GaussianBlur(frame_luminance, frame_luminance, Size(5, 5), 1);
 			bitwise_and(frame_luminance, field_space_mat, frame_luminance);
 			//medianBlur(frame_gray, frame_gray,3);
-			imshow("frame_bitwise_and_field_space_mat", frame_luminance);
-			waitKey(1);
+//			imshow("frame_bitwise_and_field_space_mat", frame_luminance);
+//			waitKey(1);
 			//waitKey(1);
 
 
@@ -173,8 +173,8 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 
 			int thresh = 19000;
 			Canny(frame_luminance, frame_edges, thresh, thresh * 2, 7);
-			imshow("original_frame_canny", frame_edges);
-			waitKey(1);
+//			imshow("original_frame_canny", frame_edges);
+//			waitKey(1);
 
 			frame_edges_clone = frame_edges.clone();
 
@@ -209,7 +209,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 			//bitwise_and(frame_edges, field_space_mat, frame_edges);
 			frame_edges_clone = frame_edges.clone();
 
-			imshow("frame_edges",frame_edges);
+			//imshow("frame_edges",frame_edges);
 
 
 
@@ -249,8 +249,8 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 
 			  }
 
-			  imshow("canny_after_lines_removal",frame_edges_clone);
-			  waitKey(10);
+//			  imshow("canny_after_lines_removal",frame_edges_clone);
+//			  waitKey(10);
 				vector<BallCandidateRansac> found_circles;
 				CircleFitRansac(frame,frame_edges_clone,found_circles,MIN_BALL_DIAMETER/2,MAX_BALL_DIAMETER/2);
 				//cout<<"found circles #:"<<found_circles.size()<<endl;
