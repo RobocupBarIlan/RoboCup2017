@@ -30,7 +30,7 @@ int main() {
 	//Motion::GetInstance()->FreeAllEngines();
 	cout << "~~~~~~~~~~~~~~Initiating threads:~~~~~~~~~~~~~~" << endl; // prints !!!Hello World!!!
 	VisionThread::GetVisionThreadInstance()->init();
-	//BrainThread::GetBrainThreadInstance()->init();
+	BrainThread::GetBrainThreadInstance()->init();
 	waitRegisterSignalDone();
 	//CommunicationThread::GetCommunicationThreadInstance()->init();
 
@@ -44,31 +44,31 @@ int main() {
 //	Point center;
 //	int radius;
 //	double distance;
-
-	GoalCandidate gc;
-
-
-	Point g1,g2;
-	int center_x;
-	int center_y;
-	double distance;
-
-	while(1)
-	{
-////	//Getting data from the vision thread example:
-
-
-//    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
-
 //
-		GoalKeepersDetector::GetGoalKeepers(g1,g2);
+//	GoalCandidate gc;
 //
-//		VisionThread::SafeReadGoalInFrame(gc);
 //
-////		//VisionThread::MillisSleep(100);
-//		//break;
-	}
+//	Point g1,g2;
+//	int center_x;
+//	int center_y;
+//	double distance;
 //
+//	while(1)
+//	{
+//////	//Getting data from the vision thread example:
+//
+//
+////    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
+//
+////
+//		GoalKeepersDetector::GetGoalKeepers(g1,g2);
+////
+////		VisionThread::SafeReadGoalInFrame(gc);
+////
+//////		//VisionThread::MillisSleep(100);
+////		//break;
+//	}
+////
 	pthread_exit(NULL); //Exit the main thread while keeping the other threads alive.
 
 

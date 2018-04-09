@@ -289,7 +289,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 						{
 							imshow("candidate",frame(candidate_bounding_rect));
 							cout<<"Does the following image (\"candidate\" window) show the ball and only the ball? [enter y for \'yes\' and n for \'no\']"<<endl;
-							waitKey();
+							waitKey(30);
 							cin>>userInput;
 							while(userInput!='y' && userInput!='n')
 							{
