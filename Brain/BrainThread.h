@@ -99,6 +99,8 @@ public:
 	static void RegisterSignals(); //This method registers all signals which can be sent to the brain thread.
 	static void SignalCallbackHandler(int signum); //This method handles all the possible signals which can be sent to the brain thread.
 	static bool IsRegisterSingalsDone(); //This method tells whether the RegisterSignals() method has already been called. It is crucial so we won't send signals before that is done.
+	static void checkTiltPan(float tilt,float pan);
+
 };
 
 #endif /* BRAIN_BRAINTHREAD_H_ */

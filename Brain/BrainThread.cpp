@@ -181,6 +181,19 @@ BrainThread* BrainThread::GetBrainThreadInstance()
 	return Brain_Thread_Instance;
 }
 
+void BrainThread::checkTiltPan(float tilt,float pan)
+{
+
+	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
+	motion->StartEngines();
+	VisionThread::MillisSleep(3000);
+	cout<<"StartEngines-> done"<<endl;
+	cout<<"Tilt: "<< motion->GetHeadTilt().Tilt<<" Pan: "<<motion->GetHeadTilt().Pan<<endl;
+	motion->SetHeadTilt(HeadTilt(tilt,pan));
+	cout<<"Tilt: "<< motion->GetHeadTilt().Tilt<<" Pan: "<<motion->GetHeadTilt().Pan<<endl;
+}
+
+
 /* This function is called only for followBall function
  * and used to center the ball all the time in different thread.
  * This centerBall thread is initiate from runBrain function.
