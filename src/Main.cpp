@@ -16,6 +16,7 @@
 #include "../Vision/Detectors/GoalKeepersDetector.h"
 
 
+
 /*
  * This method makes sure that all signals had been registered to the different threads before any operation is done.
  */

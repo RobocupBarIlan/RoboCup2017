@@ -198,6 +198,7 @@ void BrainThread::checkTiltPan(float tilt,float pan)
  * and used to center the ball all the time in different thread.
  * This centerBall thread is initiate from runBrain function.
 */
+
 void *runCenterBall(void *arg)
 {
 	int center_x, center_y;
