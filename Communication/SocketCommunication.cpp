@@ -44,7 +44,6 @@ public:
 
     int ACK[8];
 
-    msg_data();
 
 };
 
@@ -53,6 +52,7 @@ public:
 msg_data :: msg_data()
 
 {
+	sender= receiver = prd_id = suc_id = 0;
 
     for(int i = 0; i < 8; i++)
 
