@@ -6,7 +6,6 @@
 
 #include <iostream>
 
-
 #include "../Vision/VisionThread.h"
 #include "../Brain/BrainThread.h"
 #include "../Fallen/FallenThread.h"
@@ -28,13 +27,13 @@ void waitRegisterSignalDone()
 }
 
 int main() {
-	//Motion::GetInstance()->FreeAllEngines();
+	Motion::GetInstance()->FreeAllEngines();
 	cout << "~~~~~~~~~~~~~~Initiating threads:~~~~~~~~~~~~~~" << endl; // prints !!!Hello World!!!
-//	VisionThread::GetVisionThreadInstance()->init();
-//	BrainThread::GetBrainThreadInstance()->init();
-//	waitRegisterSignalDone();
+	VisionThread::GetVisionThreadInstance()->init();
+	BrainThread::GetBrainThreadInstance()->init();
+	waitRegisterSignalDone();
 	//CommunicationThread::GetCommunicationThreadInstance()->init();
-BrainThread::checkTiltPan(10,10);
+//BrainThread::checkTiltPan(10,10);
 	//Must sleep for 3 seconds at the beginning to let the camera warm-up (clean garabage in buffer):
 	VisionThread::MillisSleep(3000); //Sleep to clean the buffer
 

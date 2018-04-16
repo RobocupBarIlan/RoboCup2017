@@ -127,6 +127,9 @@ void *runBrain(void *arg)
 				cout<<"starting followBall"<<endl;
 				BrainThread::GetBrainThreadInstance()->followBall();
 				break;
+			case LOOK_FOR_GOAL_STATE:
+				BrainThread::GetBrainThreadInstance()->lookForGoal();
+				break;
 			case KICK_STATE:
 				BrainThread::GetBrainThreadInstance()->kick();
 				break;
@@ -359,6 +362,63 @@ void BrainThread::lookForBall()
 	//motion->FreeAllEngines();
 }
 
+void BrainThread::lookForGoal()
+{
+	cout<<"Look for goal state"<<endl;
+	float pan = 0, tilt = 0;
+	Motion* motion = GetBrainThreadInstance()->getMotion();
+	motion->SetHeadTilt(HeadTilt(tilt,pan));
+	VisionThread::MillisSleep(2000);
+	bool going_left = true, finish_scan = false;
+	double distance;
+	GoalCandidate gc;
+	VisionThread::SafeReadGoalInFrame(gc);
+	while(gc.m_left_post[0].x == -1)//center_x == -1 && !finish_scan) // ball wasn't found
+	{
+		if (going_left)
+		{
+			pan = pan +10;
+			if (pan >= PAN_MAX_LEFT)
+			{
+				going_left = false;
+				pan = PAN_MAX_RIGHT;
+			}
+		}
+		else
+		{
+			pan = pan +10;
+			if (pan > 0)
+			{
+				going_left = true;
+				finish_scan = true;
+			}
+		}
+		motion->SetHeadTilt(HeadTilt(tilt,pan));
+		VisionThread::MillisSleep(100);
+		VisionThread::SafeReadGoalInFrame(gc);
+//		cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
+		if (gc.m_left_post[0].x == -1) // double check
+		{
+			VisionThread::MillisSleep(1000);
+			VisionThread::SafeReadGoalInFrame(gc);
+		}
+	}
+	if (gc.m_left_post[0].x == -1)
+	{
+		cout<<"GoalFound"<<endl;
+		GetBrainThreadInstance()->centerBall();
+		if (GetBrainThreadInstance()->getState() == LOOK_FOR_GOAL_STATE)
+		{
+			GetBrainThreadInstance()->setState(KICK_STATE);
+			//VisionThread::MillisSleep(100);
+		}
+	}
+	else
+		cout<<"Goal not found ->change spot"<<endl;
+		//BrainThread::GetBrainThreadInstance()->setState(CHANGE_SPOT_STATE);
+	//motion->FreeAllEngines();
+}
+
 void BrainThread::changeSpot()
 {
 	cout << "changed spot" << endl;
@@ -382,10 +442,6 @@ void BrainThread::changeSpot()
 	GetBrainThreadInstance()->setState(LOOK_FOR_BALL_STATE);
 }
 
-void BrainThread::lookForGoal()
-{
-
-}
 
 void BrainThread::kick()
 {
