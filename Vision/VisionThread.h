@@ -28,12 +28,18 @@
 #include <opencv2/opencv.hpp>
 #include "Detectors/BallDetector.h"
 #include "Detectors/GoalDetector.h"
-
+//	// OpenCV imports
+//	#include <opencv2/imgproc/imgproc.hpp>
+//	#include <opencv2/highgui/highgui.hpp>
 
 #define INIT_VALUE -1 //Will be used to initialize class members before running any code.
 #define NOT_FOUND_OBJECT_VALUE -1 //Will be used when no object is found. we will set the appropriate class members to -1.
 
 using namespace std;
+// namespaces
+using namespace cv;
+
+#define PI 3.1415926
 class VisionThread { //Singleton - only one object should be instantiated!
 private:
 	pthread_t m_vision_thread; //Will control all the vision tasks.
@@ -62,6 +68,7 @@ public:
     static void SignalCallbackHandler(int signum); //This method handles all the possible signals which can be sent to the vision thread.
 	static void SafeReadBallCenterInFrameAndDistance(int& center_x,int& center_y,double& distance); //This method gets - center_x,center_y,distance and sets the last calculated values safely into them.
 	static void SafeReadGoalInFrame(GoalCandidate& gc); //This method sets the last calculated values of the goal safely into gc.
+	static void IPM();
 	static void SafeReadeCapturedFrame(Mat& captured_frame); //This method lets another caller to read the captured by the vision thread frame safely without any data inconsistency issues.
 	void init(); //This method initiates the vision thread.
 	static bool IsRegisterSingalsDone(); //This method tells whether the RegisterSignals() method has already been called. It is crucial so we won't send signals before that is done.
