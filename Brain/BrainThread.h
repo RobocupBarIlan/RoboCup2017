@@ -36,10 +36,10 @@
 #define LOOK_FOR_BALL_STATE 2
 #define WALK_TO_BALL_STATE 3
 #define LOOK_FOR_GOAL_STATE 4
+#define REPOSITION_BEFORE_KICK 8
 #define KICK_STATE 5
 #define CHANGE_SPOT_STATE 6
 #define FINISHED_STATE 7
-#define LOOK_FOR_GOAL_STATE 8
 #define TILT_MAX 10 // maximum head tilt
 #define TILT_MIN -45 // minimum head tilt
 #define PAN_MAX_LEFT 67 // // maximum head pan

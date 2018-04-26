@@ -130,6 +130,9 @@ void *runBrain(void *arg)
 			case LOOK_FOR_GOAL_STATE:
 				BrainThread::GetBrainThreadInstance()->lookForGoal();
 				break;
+			case REPOSITION_BEFORE_KICK:
+                BrainThread::GetBrainThreadInstance()->repositionBeforeKick();
+                break;
 			case KICK_STATE:
 				BrainThread::GetBrainThreadInstance()->kick();
 				break;
@@ -396,7 +399,6 @@ void BrainThread::lookForGoal()
 		motion->SetHeadTilt(HeadTilt(tilt,pan));
 		VisionThread::MillisSleep(100);
 		VisionThread::SafeReadGoalInFrame(gc);
-//		cout<<"center.x: "<<center_x<<"center.y: "<<center_y<<endl;
 		if (gc.m_left_post[0].x == -1) // double check
 		{
 			VisionThread::MillisSleep(1000);
@@ -409,7 +411,7 @@ void BrainThread::lookForGoal()
 		GetBrainThreadInstance()->centerBall();
 		if (GetBrainThreadInstance()->getState() == LOOK_FOR_GOAL_STATE)
 		{
-			GetBrainThreadInstance()->setState(KICK_STATE);
+			GetBrainThreadInstance()->setState(REPOSITION_BEFORE_KICK);
 			//VisionThread::MillisSleep(100);
 		}
 	}
@@ -417,6 +419,29 @@ void BrainThread::lookForGoal()
 		cout<<"Goal not found ->change spot"<<endl;
 		//BrainThread::GetBrainThreadInstance()->setState(CHANGE_SPOT_STATE);
 	//motion->FreeAllEngines();
+}
+
+void BrainThread::repositionBeforeKick()
+{
+	cout << "reposition before kick" << endl;
+    int angle = 45;
+    Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
+    //turn 45 deg to the left
+    if (m_change_spot_counter<3)
+    {
+    	m_change_spot_counter++;
+    	motion->StartWalking(-5,0,24);
+   		usleep(1388.89*angle*24);
+   		motion->StopWalking();
+   	}
+   	else
+   	{
+    	m_change_spot_counter = 0;
+   		motion->StartWalking(5,0,0);
+   		usleep(1388.89*angle*24);
+   		motion->StopWalking();
+   	}
+    GetBrainThreadInstance()->setState(KICK_STATE);
 }
 
 void BrainThread::changeSpot()
