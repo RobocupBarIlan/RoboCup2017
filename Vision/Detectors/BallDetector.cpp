@@ -301,9 +301,6 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 							if(userInput=='y') //User selected the ball's image.
 							{
 								isBallImageSelected=true;
-							}
-							if(isBallImageSelected)
-							{
 								break;
 							}
 						}
@@ -360,7 +357,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 								circle(frame,found_circles[i].m_center,found_circles[i].m_radius,Scalar(0,0,255),2);
 								namedWindow("frame",WINDOW_AUTOSIZE);
 								imshow("frame",frame);
-								waitKey(1);
+								waitKey(30);
 								return;
 							}
 						}
@@ -683,6 +680,9 @@ void BallDetector::GetCircleBoundingRectangleInFrame(Point& center,int& radius,i
 		top=max(0,center.y-radius);
 		width=min(frame_cols-left,2*radius);
 		height=min(frame_rows-top,2*radius);
+//		bounding_rect=Rect(left,top,width,height);
+//		width=2*radius+8;
+//		height=2*radius+100;
 		bounding_rect=Rect(left,top,width,height);
 	}
 	else

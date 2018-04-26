@@ -35,7 +35,7 @@
 #define START_STATE 1
 #define LOOK_FOR_BALL_STATE 2
 #define WALK_TO_BALL_STATE 3
-#define LOOK_FOR_GOAL_STATE 4
+#define LOOK_FOR_GOAL_STATE 10
 #define REPOSITION_BEFORE_KICK 8
 #define KICK_STATE 5
 #define CHANGE_SPOT_STATE 6
@@ -81,6 +81,7 @@ public:
 	void start();
 	void lookForBall();
 	void lookForGoal();
+	void repositionBeforeKick();
 	void kick();
 	void changeSpot();
 	void finish();

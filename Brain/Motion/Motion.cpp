@@ -163,7 +163,7 @@ void Motion::TurnByAngle(double angle)
 
 void Motion::TurnToGoal(double angle)
 {
-	StartWalking(0,40,5);
+	StartWalking(0,60,30);
 	usleep(88888.8888*angle);
 	StopWalking();
 }

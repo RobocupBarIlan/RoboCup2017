@@ -49,20 +49,20 @@ public:
 
 
 
-msg_data :: msg_data()
-
-{
-	sender= receiver = prd_id = suc_id = 0;
-
-    for(int i = 0; i < 8; i++)
-
-    {
-
-        ACK[i] = 0;
-
-    }
-
-}
+//msg_data :: msg_data()
+//
+//{
+//	sender= receiver = prd_id = suc_id = 0;
+//
+//    for(int i = 0; i < 8; i++)
+//
+//    {
+//
+//        ACK[i] = 0;
+//
+//    }
+//
+//}
 
 
 
@@ -343,5 +343,7 @@ void Node :: connect_socket(int port)
     {
 
         cout << "Address not supported" << endl;
-
+    }
         return;
+}
+

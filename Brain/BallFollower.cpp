@@ -44,7 +44,7 @@ BallFollower::BallFollower()
 	m_GoalRLTurn = 0;
 	m_FBStep = -5;
 	m_RLTurn = 0;
-	DEBUG_PRINT = false;
+	DEBUG_PRINT = true;
 	KickBall = 0;
 }
 
@@ -101,7 +101,7 @@ void BallFollower::Process(Point2D ball_pos)
 
 			if (pan > m_KickRightAngle && pan < m_KickLeftAngle)
 				{
-					if (tilt <= (tilt_min + 5.5)) //+ MXDXL::RATIO_VALUE2ANGLE
+					if (tilt <= (tilt_min + 10)) //+ MXDXL::RATIO_VALUE2ANGLE
 						{
 //							if (ball_pos.Y < m_KickTopAngle)
 //								{

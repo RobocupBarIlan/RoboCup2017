@@ -49,26 +49,26 @@ int main() {
 //
 //
 //	Point g1,g2;
-//	int center_x;
-//	int center_y;
-//	double distance;
+	int center_x;
+	int center_y;
+	double distance;
+
+	while(1)
+	{
+////	//Getting data from the vision thread example:
+
+
+//    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
+
 //
-//	while(1)
-//	{
-//////	//Getting data from the vision thread example:
-//
-//
-////    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
-//
-////
 //		GoalKeepersDetector::GetGoalKeepers(g1,g2);
-////
-////		VisionThread::SafeReadGoalInFrame(gc);
-////
-//////		//VisionThread::MillisSleep(100);
-////		//break;
-//	}
-////
+//
+//		VisionThread::SafeReadGoalInFrame(gc);
+//
+		VisionThread::MillisSleep(100);
+//		//break;
+	}
+//
 	pthread_exit(NULL); //Exit the main thread while keeping the other threads alive.
 
 

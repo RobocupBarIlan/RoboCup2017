@@ -79,7 +79,11 @@ void *runBrain(void *arg)
 	motion->StartEngines();
 	VisionThread::MillisSleep(3000);
 	cout<<"StartEngines-> done"<<endl;
-
+	double angle = 60.5;
+	while (true){
+		motion->TurnToGoal(angle);
+		VisionThread::MillisSleep(10000);
+	}
 	int center_x, center_y;
 	double distance;
 	//Must calibrate the ball before first run!!!:
@@ -404,6 +408,7 @@ void BrainThread::lookForGoal()
 			VisionThread::MillisSleep(1000);
 			VisionThread::SafeReadGoalInFrame(gc);
 		}
+		cout << gc.m_left_post[0].x << endl;
 	}
 	if (gc.m_left_post[0].x == -1)
 	{
@@ -581,7 +586,7 @@ void BrainThread::followBall()
 			WriteDetectedDataMutexBrainCenter.unlock();
 			cout<<"kick"<<endl;
 			GetBrainThreadInstance()->setKick(m_follower.KickBall);
-			GetBrainThreadInstance()->setState(KICK_STATE);
+			GetBrainThreadInstance()->setState(LOOK_FOR_GOAL_STATE);
 			VisionThread::MillisSleep(400);
 			return;
 		}
