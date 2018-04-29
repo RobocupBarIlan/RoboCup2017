@@ -79,11 +79,11 @@ void *runBrain(void *arg)
 	motion->StartEngines();
 	VisionThread::MillisSleep(3000);
 	cout<<"StartEngines-> done"<<endl;
-	double angle = 60.5;
-	while (true){
-		motion->TurnToGoal(angle);
-		VisionThread::MillisSleep(10000);
-	}
+//	double angle = 60.5;
+//	while (true){
+//		motion->TurnToGoal(angle);
+//		VisionThread::MillisSleep(10000);
+//	}
 	int center_x, center_y;
 	double distance;
 	//Must calibrate the ball before first run!!!:
