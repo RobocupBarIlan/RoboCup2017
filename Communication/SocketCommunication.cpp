@@ -227,7 +227,7 @@ int SocketCommunication :: Node :: receive_message()
     //In case that the message is destined for another node
     else if(msg.receiver != id)
     {
-        return 1;
+    	return 1;
     }
 
     //Print the message that received to the screen

@@ -51,7 +51,7 @@ public:
 		int server_fd, new_socket, valread;
 		int sock;
 		int opt;
-		//string  srv_ip;
+
 		struct sockaddr_in address;
 		struct sockaddr_in serv_addr;
 		static socklen_t addrlen;
