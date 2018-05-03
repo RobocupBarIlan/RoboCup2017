@@ -102,6 +102,21 @@ void Motion::StartWalking(int x_amp, int y_amp, int a_amp)
 	Walking::GetInstance()->Start();
 }
 
+void Motion::StartTurning(int x_amp, int y_amp, int z_amp, int a_amp)
+{
+	Walking::GetInstance()->m_Joint.SetEnableBody(false);
+	//Head::GetInstance()->m_Joint.SetEnableHeadOnly(true, true);
+	Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true, true);
+	Walking::GetInstance()->X_MOVE_AMPLITUDE = x_amp;
+	Walking::GetInstance()->Y_MOVE_AMPLITUDE = y_amp;
+	Walking::GetInstance()->Z_MOVE_AMPLITUDE = z_amp;
+	Walking::GetInstance()->A_MOVE_AMPLITUDE = a_amp;
+	Walking::GetInstance()->X_OFFSET = 0;
+	Walking::GetInstance()->X_OFFSET_START = 0;
+	Walking::GetInstance()->Start();
+}
+
+
 void Motion::StartWalking(double distance)
 {
 	double timeToWalk = distance /(WALK_SPEED+0.0);
@@ -163,7 +178,7 @@ void Motion::TurnByAngle(double angle)
 
 void Motion::TurnToGoal(double angle)
 {
-	StartWalking(0,60,30);
+	StartTurning(0,15,0,0);//x y z a
 	usleep(88888.8888*angle);
 	StopWalking();
 }

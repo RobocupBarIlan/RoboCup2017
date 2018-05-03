@@ -36,6 +36,7 @@ public:
 	void WalkStraight(int cmToWalk);
 	void StartWalking();
 	void StartWalking(int x_amp, int y_amp, int a_amp);
+	void StartTurning(int x_amp, int y_amp, int z_amp, int a_amp);
 	void StartWalking(double distance);
 	void StopWalking();
 	void GetUp();
