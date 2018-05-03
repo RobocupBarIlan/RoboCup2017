@@ -10,7 +10,7 @@
 #include "../Brain/BrainThread.h"
 #include "../Fallen/FallenThread.h"
 #include "../Brain/Motion/Motion.h"
-#include "../Communication/CommunicationThread.h"
+//#include "../Communication/CommunicationThread.h"
 #include "../Vision/Detectors/GoalCandidate.h"
 #include "../Vision/Detectors/GoalKeepersDetector.h"
 
@@ -49,26 +49,26 @@ int main() {
 //
 //
 //	Point g1,g2;
-	int center_x;
-	int center_y;
-	double distance;
-
-	while(1)
-	{
-////	//Getting data from the vision thread example:
-
-
-//    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
-
+//	int center_x;
+//	int center_y;
+//	double distance;
 //
-//		GoalKeepersDetector::GetGoalKeepers(g1,g2);
+//	while(1)
+//	{
+//////	//Getting data from the vision thread example:
 //
-//		VisionThread::SafeReadGoalInFrame(gc);
 //
-		VisionThread::MillisSleep(100);
-//		//break;
-	}
+////    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 //
+////
+////		GoalKeepersDetector::GetGoalKeepers(g1,g2);
+////
+////		VisionThread::SafeReadGoalInFrame(gc);
+////
+//		VisionThread::MillisSleep(100);
+////		//break;
+//	}
+////
 	pthread_exit(NULL); //Exit the main thread while keeping the other threads alive.
 
 
