@@ -79,11 +79,11 @@ void *runBrain(void *arg)
 	motion->StartEngines();
 	VisionThread::MillisSleep(3000);
 	cout<<"StartEngines-> done"<<endl;
-	double angle = 60.5;
-	while (true){
-		motion->TurnToGoal(angle);
-		VisionThread::MillisSleep(10000);
-	}
+//	double angle = 60.5;
+//	while (true){
+//		motion->TurnToGoal(angle);
+//		VisionThread::MillisSleep(10000);
+//	}
 	int center_x, center_y;
 	double distance;
 	//Must calibrate the ball before first run!!!:
@@ -314,7 +314,7 @@ void BrainThread::lookForBall()
 	double distance;
 	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 
-	while(center_x == -1)//center_x == -1 && !finish_scan) // ball wasn't found
+	while(center_x == -1 /* && !comm->foundBall()*/)//center_x == -1 && !finish_scan) // ball wasn't found
 	{
 		if (going_left)
 		{
@@ -356,12 +356,21 @@ void BrainThread::lookForBall()
 	if (center_x != -1)
 	{
 		cout<<"BallFound"<<endl;
+		// after we have comm: we send and get ball + robot location, if we are the closest to the ball contonue as follow,
+		//if not do something else
 		GetBrainThreadInstance()->centerBall();
 		if (GetBrainThreadInstance()->getState() == LOOK_FOR_BALL_STATE)
 		{
 			GetBrainThreadInstance()->setState(WALK_TO_BALL_STATE);
 			//VisionThread::MillisSleep(100);
 		}
+	}
+//	else if (comm->foundBall()){
+	//get ball location
+//		//turnToBall(by ball location);
+//		//walkToBall(); // if you are the closest to him
+//
+//	}
 	}
 	else
 		cout<<"Ball not found ->change spot"<<endl;
@@ -371,6 +380,7 @@ void BrainThread::lookForBall()
 
 void BrainThread::lookForGoal()
 {
+
 	cout<<"Look for goal state"<<endl;
 	float pan = 0, tilt = 0;
 	Motion* motion = GetBrainThreadInstance()->getMotion();
@@ -380,7 +390,8 @@ void BrainThread::lookForGoal()
 	double distance;
 	GoalCandidate gc;
 	VisionThread::SafeReadGoalInFrame(gc);
-	while(gc.m_left_post[0].x == -1)//center_x == -1 && !finish_scan) // ball wasn't found
+//	while(gc.m_left_post[0].x == -1)//center_x == -1 && !finish_scan) // ball wasn't found
+	for (int i=0;i<110;i++)
 	{
 		if (going_left)
 		{
@@ -420,8 +431,12 @@ void BrainThread::lookForGoal()
 			//VisionThread::MillisSleep(100);
 		}
 	}
-	else
+	else{
 		cout<<"Goal not found ->change spot"<<endl;
+	GetBrainThreadInstance()->setState(REPOSITION_BEFORE_KICK);
+	}
+
+//	GetBrainThreadInstance()->setState(KICK_STATE);
 		//BrainThread::GetBrainThreadInstance()->setState(CHANGE_SPOT_STATE);
 	//motion->FreeAllEngines();
 }
@@ -429,23 +444,35 @@ void BrainThread::lookForGoal()
 void BrainThread::repositionBeforeKick()
 {
 	cout << "reposition before kick" << endl;
-    int angle = 45;
+//    int angle = 45;
     Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
+
+    if (motion->GetHeadTilt()<0){
+    	//move left
+//    	motion->StartTurning(10,-45,0,0);//to Goal
+    }
+    else{
+    	//move right
+//    	motion->StartTurning(10,45,0,0);//to Goal
+    }
+    while (motion->GetHeadTilt().Pan > 5 && motion->GetHeadTilt().Pan < -5){};
+    motion->StopWalking();
     //turn 45 deg to the left
-    if (m_change_spot_counter<3)
-    {
-    	m_change_spot_counter++;
-    	motion->StartWalking(-5,0,24);
-   		usleep(1388.89*angle*24);
-   		motion->StopWalking();
-   	}
-   	else
-   	{
-    	m_change_spot_counter = 0;
-   		motion->StartWalking(5,0,0);
-   		usleep(1388.89*angle*24);
-   		motion->StopWalking();
-   	}
+
+//    if (m_change_spot_counter<3)
+//    {
+//    	m_change_spot_counter++;
+//    	motion->StartWalking(-5,0,24);
+//   		usleep(1388.89*angle*24);
+//   		motion->StopWalking();
+//   	}
+//   	else
+//   	{
+//    	m_change_spot_counter = 0;
+//   		motion->StartWalking(5,0,0);
+//   		usleep(1388.89*angle*24);
+//   		motion->StopWalking();
+//   	}
     GetBrainThreadInstance()->setState(KICK_STATE);
 }
 
@@ -575,6 +602,7 @@ void BrainThread::followBall()
 					m_continue_center_thread = 0;
 			WriteDetectedDataMutexBrainCenter.unlock();
 			cout<<"setting look for ball state"<<endl;
+			//afer we have comm:if robot lost the ball signal the others and look for ball again
 			GetBrainThreadInstance()->setState(LOOK_FOR_BALL_STATE);
 			VisionThread::MillisSleep(100);
 			return;
