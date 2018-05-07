@@ -20,21 +20,475 @@
 	std::atomic<bool> VisionThread::IS_PROCCESSING_IMAGE(false);
 	std::atomic<bool> VisionThread::IS_READING_FRAME(false);
 	GoalCandidate VisionThread::DetectedGoalCandidate;
-VisionThread::VisionThread() {
+VisionThread::VisionThread()
+{
 
 }
 
-VisionThread::~VisionThread() {
+VisionThread::~VisionThread()
+{
 	// TODO Auto-generated destructor stub
 }
 
-void VisionThread::IPM()
+Mat VisionThread::FetchFrame()
+{
+	Mat source;
+	VisionThread::SafeReadeCapturedFrame(source);
+	return source;
+}
 
+void VisionThread::DetectLines()
+{
+LinesDetector lt;
+
+Mat ipm_image;
+Mat src, src_gray, src_hsv;
+Mat dst, detected_edges;
+Mat src_gray2;
+int edgeThresh = 1;
+int const max_lowThreshold = 255;
+
+int low_red = 39;	//  39  39  39  39  39  39  39  39  48  48
+int low_green = 76;//90 //  54  39 121  15  29 106  41  83  83 126
+int low_blue = 66;//?  //   35  32  56  79  23 107 107 107 107 107
+int high_red = 81;   //  88  90  88 102  88  76  76  76  76  76
+int high_green = 255;// 255 255 255 255 255 255 255 255 255 198
+int high_blue = 252; // 252 252 252 252 252 252 252 252 252 218
+
+int low_red2 = 0;	// 080 080 000 080 000
+int low_green2 = 0; // 011 000 000 000 000
+int low_blue2 = 180;  // 112 161 255 154 161
+int high_red2 = 255;// 107 133 091 132 176
+int high_green2 = 68;// 161 036 037 057 042
+int high_blue2 = 255; // 246 255 255 255 255
+int ratio = 3;
+int kernel_size = 3;
+
+int alpha_ = 20, beta_ = 90, gamma_ = 90;
+int f_ = 1300, dist_ = 200;
+int threshold = 25, minLinLength = 20, maxLineGap = 23;
+//ipm_image = IPM(alpha_, dist_, f_);
+
+
+int thresh = 100;
+
+
+//imshow("Result2", ipm_image);
+const char* window_name = "Green";
+const char* window_name2 = "White";
+namedWindow(window_name, CV_WINDOW_NORMAL);
+namedWindow("Result2", CV_WINDOW_NORMAL);
+namedWindow(window_name2, CV_WINDOW_NORMAL);
+namedWindow("Result3", CV_WINDOW_NORMAL);
+
+createTrackbar("Min Hue:", window_name, &low_red, max_lowThreshold);
+ createTrackbar("Min Saturation:", window_name, &low_green, max_lowThreshold);
+ createTrackbar("Min Value:", window_name, &low_blue, max_lowThreshold);
+ createTrackbar("Max Hue:", window_name, &high_red, max_lowThreshold);
+ createTrackbar("Max Saturation:", window_name, &high_green, max_lowThreshold);
+ createTrackbar("Max Value:", window_name, &high_blue, max_lowThreshold);
+ createTrackbar("Min Hue:", window_name2, &low_red2, max_lowThreshold);
+ createTrackbar("Min Saturation:", window_name2, &low_green2, max_lowThreshold);
+ createTrackbar("Min Value:", window_name2, &low_blue2, max_lowThreshold);
+ createTrackbar("Max Hue:", window_name2, &high_red2, max_lowThreshold);
+ createTrackbar("Max Saturation:", window_name2, &high_green2, max_lowThreshold);
+ createTrackbar("Max Value:", window_name2, &high_blue2, max_lowThreshold);
+
+
+ createTrackbar( "Threshold:", "Source44", &thresh, 500);
+
+
+createTrackbar("threshold", "Result2", &threshold, 300);
+createTrackbar("minLinLength", "Result2", &minLinLength, 300);
+createTrackbar("maxLineGap", "Result2", &maxLineGap, 300);
+
+//createTrackbar("alpha", "Result3", &alpha_, 180);
+createTrackbar("focal", "Result3", &f_, 2000);
+createTrackbar("distance", "Result3", &dist_, 500);
+
+for (int i = 0; i < 1000000; i++)
+{
+
+////	createTrackbar("f", "Result2", &f_, 2000);
+////	createTrackbar("Distance", "Result2", &dist_, 2000);
+//
+	/// Load an image
+	 // 61 51 83
+	src = FetchFrame();
+
+
+	 Size size(((double) src.size().width / src.size().height) * 500, 500);//the dst image size,e.g.100x100
+	 Mat field, robots;//dst image
+	 resize(src, dst, size);//resize image
+	 field = dst.clone();
+	 robots = dst.clone();
+
+	 Mat& Field = field;
+	 Mat& Robots = robots;
+
+	CannyThreshold(src, src_gray, src_hsv,
+detected_edges,
+src_gray2,
+edgeThresh,
+low_red,
+low_green,
+low_blue,
+high_red,
+high_green,
+high_blue,
+low_red2,
+low_green2,
+low_blue2,
+high_red2,
+high_green2,
+high_blue2,
+ratio,
+kernel_size, Field, Robots);
+	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
+	HeadTilt ht = motion->GetHeadTilt();
+	alpha_ = 20;//ht.Tilt;
+	ipm_image = IPM(Field, alpha_, dist_, f_);
+
+	Mat src_gray9;
+	int max_thresh = 255; RNG rng(12345);
+    cvtColor(ipm_image, src_gray9, cv::COLOR_RGB2GRAY);
+
+	//Mat white2 = Ellipse(src, src_gray9, thresh, max_thresh, rng);
+
+	//imshow("Result2", ipm_image);
+	lt.GetLinesPosts(ipm_image, threshold, minLinLength, maxLineGap);
+	 /// Load an image
+	 //src = imread(ipm_image, 1);
+	 // 61 51 83
+	 //if (!src.data)
+	 //{
+	 // return -1;
+	 //}
+
+}
+waitKey(0);
+}
+
+void VisionThread::CannyThreshold(Mat src, Mat src_gray, Mat src_hsv,
+Mat detected_edges,
+Mat src_gray2,
+int edgeThresh,
+int low_red,
+int low_green,
+int low_blue,
+int high_red,
+int high_green,
+int high_blue,
+int low_red2,
+int low_green2,
+int low_blue2,
+int high_red2,
+int high_green2,
+int high_blue2,
+int ratio,
+int kernel_size, Mat& White_zone, Mat& Robots
+/*int, void**/)
+{
+	 /// Reduce noise with a kernel 3x3
+	 cvtColor(src, src_hsv, CV_RGB2HSV);
+	 //imshow("Original", src);
+	 inRange(src_hsv, Scalar(low_red, low_green, low_blue), Scalar(high_red, high_green, high_blue), src_gray);
+	 inRange(src_hsv, Scalar(low_red2, low_green2, low_blue2), Scalar(high_red2, high_green2, high_blue2), src_gray2);
+	 //blur(src_gray, detected_edges, Size(3, 3));
+	 /// Canny detector
+	 //Canny(detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size);
+	 /// Using Canny's output as a mask, we display our result
+	 //dst = Scalar::all(0);
+	 //src.copyTo(dst, detected_edges);
+	 Mat clo = src.clone();
+	 Mat clo1;
+	 Mat clo2;
+
+	 medianBlur(src_gray, src_gray, 3);
+	 medianBlur(src_gray2, src_gray2, 3);
+
+	 bitwise_and(clo, clo, clo2, src_gray);
+	 Mat grass_white;
+	 bitwise_or(src_gray, src_gray2, grass_white, noArray());
+	 Mat gray = src_gray.clone();
+	 //cvtColor(src_gray, src_gray, COLOR_ COLOR_RGBA2GRAY, 0);
+	 threshold(gray, gray, 100, 200, THRESH_BINARY);
+	 vector<vector<Point> > contours;
+	 vector<Vec4i> hierarchy;
+	 vector<vector<Point> > hull;
+	 Mat dst = Mat::zeros(gray.rows, gray.cols, CV_8UC1);
+	 findContours(gray, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
+	 // approximates each contour to convex hull
+	 for (int i = 0; i < contours.size(); i++) {
+	 	Mat tmp;
+	  vector<Point > cnt = contours[i];
+	 // You can try more different parameters
+	 	convexHull(cnt, tmp, false, true);
+	 	hull.push_back(tmp);
+	 }
+	 // draw contours with random Scalar
+	 for (int i = 0; i < contours.size(); i++) {
+		 Mat dst_tmp;
+
+		 double area = contourArea(contours[i]);
+		 if (area > 1200)
+		 {
+			 Mat temp_mat_dilate;
+			 Mat temporary_mat = Mat::zeros(gray.rows, gray.cols, CV_8UC1);
+	 	Scalar colorHull = Scalar(255, 255, 255);
+	 	drawContours(temporary_mat, hull, i, colorHull, -1, 8, hierarchy, 0);
+//	 	int dilation_type;
+//	 	int dilation_size = 10;
+//	 	Mat element = getStructuringElement( MORPH_RECT,
+//	 	                                       Size( 2*dilation_size + 1, 2*dilation_size+1 ),
+//	 	                                       Point( dilation_size, dilation_size ) );
+//	 	  /// Apply the dilation operation
+//
+//	 	dilate(temporary_mat, temp_mat_dilate, element);
+		 bitwise_or(temporary_mat, dst, dst_tmp);
+	 	dst = dst_tmp.clone();
+		 }
+	 }
+
+	 	   int status = 0;
+	 	   for (int y = 0; y < dst.rows; y++)
+	 	   {
+	 	 	  Scalar intensity = dst.at<uchar>(Point(0, y));
+	 	 	  if (intensity.val[0] != 0  && status == 0)
+	 	 	  {
+	 	 		  status = 1;
+	 	 	  }
+	 	 	  if (intensity.val[0] == 0  && status == 1)
+	 	 	  {
+	 	 		  status = 2;
+	 	 	  }
+	 	 	  if (intensity.val[0] != 0  && status == 2)
+	 	 	  {
+	 	 		  status = 1;
+	 	 	  }
+	 	 	  if (status == 2)
+	 	 	  {
+	 	 		dst.at<uchar>(y, 0) = 255;
+	 	 	  }
+
+	 	   }
+
+	 	   status = 0;
+	 	   for (int y = 0; y < dst.rows; y++)
+	 	   {
+	 	 	  Scalar intensity = dst.at<uchar>(Point(dst.cols-1, y));
+	 	 	  if (intensity.val[0] != 0  && status == 0)
+	 	 	  {
+	 	 		  status = 1;
+	 	 	  }
+	 	 	  if (intensity.val[0] == 0  && status == 1)
+	 	 	  {
+	 	 		  status = 2;
+	 	 	  }
+	 	 	  if (intensity.val[0] != 0  && status == 2)
+	 	 	  {
+	 	 		  status = 1;
+	 	 	  }
+	 	 	  if (status == 2)
+	 	 	  {
+	 	 		dst.at<uchar>(y, dst.cols-1) = 255;
+	 	 	  }
+	 	   }
+
+	 	   status = 0;
+	 	   for (int x = 0; x < dst.cols; x++)
+	 	   {
+	 	 	  Scalar intensity = dst.at<uchar>(Point(x, dst.rows-1));
+	 	 	  if (intensity.val[0] != 0  && status == 0)
+	 	 	  {
+	 	 		  status = 1;
+	 	 	  }
+	 	 	  if (intensity.val[0] == 0  && status == 1)
+	 	 	  {
+	 	 		  status = 2;
+	 	 	  }
+	 	 	  if (intensity.val[0] != 0  && status == 2)
+	 	 	  {
+	 	 		  status = 1;
+	 	 	  }
+	 	 	  if (status == 2)
+	 	 	  {
+	 	 		dst.at<uchar>(dst.rows-1, x) = 255;
+	 	 	  }
+	 	   }
+
+	 	  status = 0;
+	 	   for (int x = 0; x < dst.cols; x++)
+	 	   {
+	 		   int x_left = -1;
+	 		   int write = 0;
+	 	 	  Scalar intensity = dst.at<uchar>(Point(x, 0));
+	 	 	  if (intensity.val[0] != 0  && x_left == -1)
+	 	 	  {
+	 	 		  x_left == x;
+	 	 	  }
+	 	 	  if (intensity.val[0] == 0  && x_left == -1)
+	 	 	  {
+	 	 		  write = 1;
+	 	 	  }
+	 	 	  if (intensity.val[0] != 0  && write == 1)
+	 	 	  {
+	 	 		  for (int x2 = x_left; x2 <= x; x2++)
+	 	 		  {
+	 		 	 		dst.at<uchar>(0, x2) = 255;
+	 	 		  }
+	 	 		write = 0;
+	 	 	  }
+	 	   }
+
+
+		 	 Mat grayC = dst.clone();
+		 	 vector<vector<Point> > contoursC;
+		 	 vector<Vec4i> hierarchyC;
+		 	 vector<vector<Point> > hullC;
+		 	 Mat dstC = Mat::zeros(grayC.rows, grayC.cols, CV_8UC1);
+		 	 findContours(grayC, contoursC, hierarchyC, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
+		 	 // approximates each contour to convex hull
+		 	 for (int i = 0; i < contoursC.size(); i++)
+		 	 {
+		 	 	Mat tmpC;
+		 	  vector<Point > cntC = contoursC[i];
+		 	 // You can try more different parameters
+		 	 	convexHull(cntC, tmpC, false, true);
+		 	 	hullC.push_back(tmpC);
+		 	 }
+		 	 RNG rng(12345);
+
+		 	   for( int i = 0; i< contoursC.size(); i++ )
+		 	      {
+		 	        Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+		 	        drawContours( dstC, contoursC, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+		 	        drawContours( dstC, hullC, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+		 	      }
+
+	 	 // draw contours with random Scalar
+	 	 for (int i = 0; i < contoursC.size(); i++)
+	 	 {
+	 		 Mat dst_tmpC;
+
+	 		 double areaC = contourArea(contoursC[i]);
+	 		Mat temp_mat_dilateC;
+	 		Mat temporary_matC = Mat::zeros(grayC.rows, grayC.cols, CV_8UC1);
+	 	 	Scalar colorHull = Scalar(255, 255, 255);
+	 	 	drawContours(temporary_matC, hullC, i, colorHull, -1, 8, hierarchyC, 0);
+	 		 bitwise_or(temporary_matC, dstC, dst_tmpC);
+	 	 	dstC = dst_tmpC.clone();
+	 	 }
+
+	 Mat Total_Field, GreenNWhite, white_field_binary, white_field, field_objects;
+	 Mat Green, White;
+	 Mat Green_Field, White_Field, Robot_Field;
+	 Mat F_B, G_B, W_B, R_B;
+	 F_B = dstC.clone();
+	 G_B = src_gray.clone();
+	 W_B = src_gray2.clone();
+
+	 bitwise_and(F_B, G_B, Green, noArray());
+	 bitwise_and(clo, clo, Green_Field, Green);
+	 imshow("Grass", Green_Field);
+
+	 bitwise_and(clo, clo, Total_Field, F_B);
+	 imshow("Total Field", Total_Field);
+
+	 bitwise_and(F_B, W_B, White, noArray());
+	 bitwise_and(clo, clo, White_Field, White);
+	 imshow("White Lines", White_Field);
+
+	 bitwise_or(G_B, W_B, GreenNWhite, noArray());
+	 bitwise_not(GreenNWhite, GreenNWhite);
+	 bitwise_and(GreenNWhite, F_B, R_B, noArray());
+	 bitwise_and(clo, clo, Robot_Field, R_B);
+	 imshow("Robots", Robot_Field);
+Robots = Robot_Field;
+White_zone = White_Field;
+
+//	 bitwise_not(grass_white, grass_white, noArray());
+//	 bitwise_and(dstC, dstC, dst2, grass_white);
+//	 bitwise_and(dstC, dstC, white_field_binary, src_gray2);
+//
+//	 bitwise_and(clo, clo, dst3, dst);
+//	 bitwise_and(dst3, dst3, field_objects, dst2);
+//	 medianBlur(field_objects, field_objects, 3);
+//	 bitwise_and(clo, clo, white_field, white_field_binary);
+//
+//
+//	 imshow("White lines", white_field);
+//	 imshow("Grass", white_field);
+//	 imshow("Field Objects", field_objects);
+//	 imshow("Total Field", dst3);
+	//return white_field;
+	 //return White_Field;
+}
+
+Mat VisionThread::Ellipse(Mat src, Mat src_gray, int thresh, int max_thresh, RNG rng)
+{
+	  Mat threshold_output;
+	  vector<vector<Point> > contours;
+	  vector<Vec4i> hierarchy;
+
+	  /// Detect edges using Threshold
+	  threshold( src_gray, threshold_output, thresh, 255, THRESH_BINARY );
+	  /// Find contours
+	  findContours( threshold_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+
+	  /// Find the rotated rectangles and ellipses for each contour
+	  vector<RotatedRect> minRect( contours.size() );
+	  vector<RotatedRect> minEllipse( contours.size() );
+
+	  for( int i = 0; i < contours.size(); i++ )
+	     { minRect[i] = minAreaRect( Mat(contours[i]) );
+	       if( contours[i].size() > 5 )
+	         { minEllipse[i] = fitEllipse( Mat(contours[i]) ); }
+	     }
+
+	  /// Draw contours + rotated rects + ellipses
+	  Mat drawing = Mat::zeros( threshold_output.size(), CV_8UC3 );
+	  Mat drawing1 = Mat::zeros( threshold_output.size(), CV_8UC3 );
+
+      int max_index = -1;
+      double max_area = 0;
+      Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+
+	  for( int i = 0; i< contours.size(); i++ )
+	     {
+	       // contour
+	       drawContours( drawing1, contours, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+	       // ellipse
+if ( (double) minEllipse[i].size.height / minEllipse[i].size.width < 3.5)
+	       if (minEllipse[i].size.area() > max_area)
+	       {
+	    	   max_area = minEllipse[i].size.area();
+	    	   max_index = i;
+	       }
+
+	       // rotated rectangle
+	       Point2f rect_points[4]; minRect[i].points( rect_points );
+	       //for( int j = 0; j < 4; j++ )
+	          //line( drawing, rect_points[j], rect_points[(j+1)%4], color, 1, 8 );
+	     }
+	  if (max_index != -1)
+	  {
+		  cout << minEllipse[max_index].size.height << " " << minEllipse[max_index].size.width << endl;
+ellipse( src, minEllipse[max_index], color, 2, 8 );
+	  }
+	  /// Show in a window
+	  namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
+	  imshow( "Contours", src );
+	  return drawing;
+}
+
+Mat VisionThread::IPM(Mat regular, int alpha_, int dist_, int f_)
 {
 
 	int frameWidth = 640;
 	int frameHeight = 480;
-
+int beta_ = 90;
+int gamma_ = 90;
 	/*
 	 * This code illustrates bird's eye view perspective transformation using opencv
 	 * Paper: Distance Determination for an Automobile Environment using Inverse Perspective Mapping in OpenCV
@@ -42,22 +496,6 @@ void VisionThread::IPM()
 	 * Code taken from: http://www.aizac.info/birds-eye-view-homography-using-opencv/
 	 */
 
-
-	    // get file name from the command line
-	    //string filename = argv[1];
-
-	    // capture object
-//	cout << "1";
-//	VideoCapture capture; // open the default camera
-//	cout << "2";
-//	capture.open(0);
-//	cout << "3";
-//	capture.set(CV_CAP_PROP_FPS,50);
-//	cout << "4";
-//	capture.set(cv::CAP_PROP_FRAME_WIDTH, 720);
-//	cout << "5";
-//	capture.set(cv::CAP_PROP_FRAME_HEIGHT, 405);
-//	cout << "6";
 //
 //		if (!capture.isOpened())
 //		{
@@ -65,28 +503,23 @@ void VisionThread::IPM()
 //			pthread_exit(NULL);
 //		}
 
-
 	    // mat container to receive images
 	    Mat source, destination;
 
 //	    // check if capture was successful
 //	    if( !capture.isOpened()) throw "Error reading video";
 
+		//createTrackbar("Alpha", "Result", &alpha_, 180);
+		////createTrackbar("Beta", "Result", &beta_, 180);
+		////createTrackbar("Gamma", "Result", &gamma_, 180);
+		//createTrackbar("f", "Result", &f_, 2000);
+		//createTrackbar("Distance", "Result", &dist_, 2000);
+		//namedWindow("Result", 1);
 
-		int alpha_ = 90, beta_ = 90, gamma_ = 90;
-		int f_ = 500, dist_ = 500;
-
-		namedWindow("Result", 1);
-
-		createTrackbar("Alpha", "Result", &alpha_, 180);
-		createTrackbar("Beta", "Result", &beta_, 180);
-		createTrackbar("Gamma", "Result", &gamma_, 180);
-		createTrackbar("f", "Result", &f_, 2000);
-		createTrackbar("Distance", "Result", &dist_, 2000);
 int counter = 0;
-		while( true ) {
-
-			VisionThread::SafeReadeCapturedFrame(source);
+		//while( true ) {
+source = regular;
+			//VisionThread::SafeReadeCapturedFrame(source);
 			//capture >> source;
 
 			resize(source, source,Size(frameWidth, frameHeight));
@@ -102,14 +535,12 @@ int counter = 0;
 			Size image_size = source.size();
 			double w = (double)image_size.width, h = (double)image_size.height;
 
-
 			// Projecion matrix 2D -> 3D
 			Mat A1 = (Mat_<float>(4, 3)<<
 				1, 0, -w/2,
 				0, 1, -h/2,
 				0, 0, 0,
 				0, 0, 1 );
-
 
 			// Rotation matrices Rx, Ry, Rz
 
@@ -131,7 +562,6 @@ int counter = 0;
 				0, 0, 1, 0,
 				0, 0, 0, 1	);
 
-
 			// R - rotation matrix
 			Mat R = RX * RY * RZ;
 
@@ -149,15 +579,15 @@ int counter = 0;
 				0, 0, 1, 0
 				);
 
-
 			Mat transformationMat = K * (T * (R * A1));
 
 			warpPerspective(source, destination, transformationMat, image_size, INTER_CUBIC | WARP_INVERSE_MAP);
-
+			//destination = source;
 			imshow("Result", destination);
 			//cout << counter++ << endl;
 			waitKey(100);
-		}
+			return destination;
+		//}
 }
 void *runVideoCapture(void *arg)
 {
@@ -190,8 +620,6 @@ void *runVideoCapture(void *arg)
 	cap.release();
 	pthread_exit(NULL);
 }
-
-
 
 void *runVision(void *arg)
 {
@@ -287,7 +715,6 @@ bool VisionThread::IsRegisterSingalsDone()
 
 void VisionThread::GetGoalCandidate()
 {
-
 	if(IS_NO_GOAL_COMPUTATION)
 	{
 		IS_NO_GOAL_COMPUTATION=false;
@@ -305,7 +732,6 @@ void VisionThread::GetGoalCandidate()
 		Is_Goal_Writing_Done=true; //Enable a safe read (when SafeReadGoalCandidate will be called it will read the correct data).
 	}
 }
-
 
 //This method is called by the callback handler when another thread signaled the GET_BALL_CENTER_IN_FRAME_AND_DISTANCE signal.
 void VisionThread::GetBallCenterInFrameAndDistance()
@@ -332,7 +758,6 @@ void VisionThread::GetBallCenterInFrameAndDistance()
 
 }
 
-
 void VisionThread::SafeReadBallCenterInFrameAndDistance(int& center_x,int& center_y,double& distance)
 {
 	IS_PROCCESSING_IMAGE=true; //Must be added so the camera won't capture in parallel to us processing the previous frame.
@@ -356,7 +781,6 @@ void VisionThread::SafeReadBallCenterInFrameAndDistance(int& center_x,int& cente
 
 	//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 }
-
 
 void VisionThread::SafeReadGoalInFrame(GoalCandidate& gc)
 {
@@ -406,7 +830,6 @@ int  VisionThread::MillisSleep(long miliseconds)
 
    return nanosleep(&req , &rem);
 }
-
 
 void VisionThread::SafeReadeCapturedFrame(Mat& captured_frame)
 {

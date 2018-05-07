@@ -29,7 +29,7 @@ using namespace std;
 class LinesDetector{
 public:
 
-	static void GetLinesPosts(Mat image); //The result will be set into the gc variable. please note that if no post was found all values in x,y of points will be set to -1. otherwise if only 1 post was found only the left post will be set to the appropriate value. (otherwise 2 posts-> update of both posts left and right).
+	static void GetLinesPosts(Mat image, int threshold, int minLinLength, int maxLineGap); //The result will be set into the gc variable. please note that if no post was found all values in x,y of points will be set to -1. otherwise if only 1 post was found only the left post will be set to the appropriate value. (otherwise 2 posts-> update of both posts left and right).
 	static void FieldCalibration(Mat& hue_matrix, uchar& field_min_hue, uchar& field_max_hue) ;	//Function calculates the min hue value of the green field and max hue value of the green field.
 																								//Takes- hue_matrix as input. Returns field_min_hue and field_max_hue
 	static void CalculateBoundingHorizontalLine(Mat& field_mat, ushort& bounding_horizontal_line);

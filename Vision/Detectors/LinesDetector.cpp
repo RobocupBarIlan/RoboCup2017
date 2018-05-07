@@ -4,7 +4,7 @@
 #include <math.h>
 #define PI 3.14159265358979 //Value of Pi (11 digits after the point).
 
-void LinesDetector::GetLinesPosts(Mat image){
+void LinesDetector::GetLinesPosts(Mat image, int threshold, int minLinLength, int maxLineGap){
 	    Mat frame,frame_hsv, frame_gray,original_field_mat, field_mat, whites_mat, field_space_mat, candidates_mat; //frame=origianl image. frame_hsv=image after transform to hsv. field_mat=only pixels in bounds of field's green after calibration are 0 (all the rest 255). whites_mat=only white pixels in image. field_space_mat=all pixels below bounding_horizontal_line (i.e -assumed to be field). candidates_mat=pixels which are not field and white and below bounding horizontal line.
 		Mat dst,line1,cdst,cdstP,src1;
 	    Mat hsv_channels[NUM_CHANNELS]; //Will contain all 3 HSV channels splitted.
@@ -129,14 +129,21 @@ frame = image;
 				imshow("field_space_mat", field_space_mat);
 				waitKey(1);
 				imshow("whites_mat", whites_mat);
-				bitwise_and(whites_mat, field_space_mat, whites_mat);
+				//bitwise_and(whites_mat, field_space_mat, whites_mat);
 
 				Mat element = getStructuringElement( MORPH_RECT,
 				                                       Size( 3, 3 ));
 
 			    //erode(whites_mat,whites_mat,element); //Perform erosion to get rid of noise.
 //				medianBlur(whites_mat1,whites_mat,3);
-			    GaussianBlur(whites_mat,whites_mat,Size(3,3),1.5,1.5);
+			    //GaussianBlur(whites_mat,whites_mat,Size(3,3),1.5,1.5);
+
+				//GaussianBlur(whites_mat,whites_mat,Size(7,7),3,3);
+
+
+
+
+
 				imshow("whites_matG", whites_mat);
 				waitKey(1);
 				src1=whites_mat.clone();
@@ -173,7 +180,7 @@ frame = image;
 				    //![hough_lines_p]
 				    // Probabilistic Line Transform
 				    vector<Vec4i> linesP; // will hold the results of the detection
-				    HoughLinesP(dst, linesP, 1, CV_PI/180, 50, 50, 120 ); // runs the actual detection
+				    HoughLinesP(dst, linesP, 1, CV_PI/180, threshold, minLinLength, maxLineGap ); // runs the actual detection
 				    //![hough_lines_p]
 				    //![draw_lines_p]
 				    // Draw the lines
@@ -195,11 +202,11 @@ frame = image;
 
 				        //////////////////////////////////////////////////////////////////////////////
 				    }
-int counter = 0;
 				    for( size_t i = 0; i < linesP.size(); i++ )
 				    {
 					    for( size_t j = i+1; j < linesP.size(); j++ )
 					    {
+					    	bool is_junction_T = false, is_junction_X = false;
 					    	if (thetas[i] < 0)
 					    	{
 					    		thetas[i] += PI;
@@ -208,15 +215,13 @@ int counter = 0;
 					    	{
 					    		thetas[j] += PI;
 					    	}
-					    	//std::cout << "Degree " << i << ": " << thetas[i] << std::endl;
-					    	//std::cout << "Degree " << j << ": " << thetas[j] << std::endl;
-//std::cout << abs(abs(thetas[i] - thetas[j]) - PI / 2) << std::endl;
-					    	if (abs(abs(thetas[i] - thetas[j]) - PI / 2) <= 75 * PI / 180)
+
+					    	if (abs(abs(thetas[i] - thetas[j]) - PI / 2) <= 40 * PI / 180)
 					    	{
 						        Vec4i l_i = linesP[i];
 						        Vec4i l_j = linesP[j];
-						        line( frame, Point(l_i[0], l_i[1]), Point(l_i[2], l_i[3]), Scalar(255,0,0), 3, LINE_AA);
-						        line( frame, Point(l_j[0], l_j[1]), Point(l_j[2], l_j[3]), Scalar(0,255,0), 3, LINE_AA);
+						        //line( frame, Point(l_i[0], l_i[1]), Point(l_i[2], l_i[3]), Scalar(255,0,0), 3, LINE_AA);
+						        //line( frame, Point(l_j[0], l_j[1]), Point(l_j[2], l_j[3]), Scalar(0,255,0), 3, LINE_AA);
 
 						        /// ----- ADDITION FOR T JUNCTION ------ ///
 						        double x1 = l_i[0];
@@ -228,10 +233,6 @@ int counter = 0;
 						        double y3 = l_j[1];
 						        double x4 = l_j[2];
 						        double y4 = l_j[3];
-std::cout << "P1: [" << x1 << ", " << y1 << "]" << std::endl;
-std::cout << "P2: [" << x2 << ", " << y2 << "]" << std::endl;
-std::cout << "P3: [" << x3 << ", " << y3 << "]" << std::endl;
-std::cout << "P4: [" << x4 << ", " << y4 << "]" << std::endl;
 
 						        double m1 = (double) (l_i[3] - l_i[1]) / (l_i[2] - l_i[0]);
 						        double m2 = (double) (l_j[3] - l_j[1]) / (l_j[2] - l_j[0]);
@@ -239,31 +240,48 @@ std::cout << "P4: [" << x4 << ", " << y4 << "]" << std::endl;
 						        {
 						        	double intersection_x = (-x3 * m2 + y3 + x1 * m1 - y1) / (m1 - m2);
 						        	double intersection_y = m1 * intersection_x - x1 * m1 + y1;
-std::cout << "Intersection: [" << intersection_x << ", " << intersection_y << "]" << std::endl;
-						        	double threshold_dis = 30;
+						        	double threshold_dis = 15;
 						        	double dis_from_p1 = sqrt(pow(intersection_x - x1, 2) + pow(intersection_y - y1, 2));
 						        	double dis_from_p2 = sqrt(pow(intersection_x - x2, 2) + pow(intersection_y - y2, 2));
 						        	double dis_from_p3 = sqrt(pow(intersection_x - x3, 2) + pow(intersection_y - y3, 2));
 						        	double dis_from_p4 = sqrt(pow(intersection_x - x4, 2) + pow(intersection_y - y4, 2));
+						        	double line1 = sqrt(pow(x2 - x1, 2) + pow(y2- y1, 2));
+						        	double line2 = sqrt(pow(x4 - x3, 2) + pow(y4- y3, 2));
 
-						        	if ((dis_from_p1 >= threshold_dis) + (dis_from_p2 >= threshold_dis) + (dis_from_p3 >= threshold_dis) + (dis_from_p4 >= threshold_dis) == 4)
+						        	bool is_valid_line = (line1 * 1.1 > dis_from_p1 + dis_from_p2) && (line2 * 1.1 > dis_from_p3 + dis_from_p4);
+						        	if (is_valid_line)
 						        	{
-						        		counter++;
-						        		circle(frame, cvPoint(intersection_x, intersection_y), 10, Scalar(0,0,0), 3);
+						        		circle(frame, cvPoint(intersection_x, intersection_y), 10, Scalar(0,255,255), 3);
+
+						        	if ((dis_from_p1 >= threshold_dis) + (dis_from_p2 >= threshold_dis) + (dis_from_p3 >= threshold_dis) + (dis_from_p4 >= threshold_dis) == 3)
+						        	{
+						        		is_junction_T = true;
+						        		circle(frame, cvPoint(intersection_x, intersection_y), 10, Scalar(0,0,255), 3);
+						        	}
+						        	else if ((dis_from_p1 >= threshold_dis) + (dis_from_p2 >= threshold_dis) + (dis_from_p3 >= threshold_dis) + (dis_from_p4 >= threshold_dis) == 4)
+						        	{
+						        		is_junction_X = true;
+						        		circle(frame, cvPoint(intersection_x, intersection_y), 10, Scalar(0,255,0), 3);
+						        	}
+
+							        if (!is_junction_T && !is_junction_X)
+							        {
+						        		circle(frame, cvPoint(intersection_x, intersection_y), 10, Scalar(255,0,0), 3);
+							        }
 						        	}
 						        }
 
 						        /// ----- END OF ADDITION FOR T JUNCTION ------ ///
+
 					    	}
 					    }
 				    }
-std::cout << "COUNTER: " << counter << std::cout;
 				    delete[] thetas;
 
 				    for( size_t i = 0; i < linesP.size(); i++ )
 				    {
 				        Vec4i l = linesP[i];
-				       // line( frame, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
+				        //line( frame, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
 				    }
 
 				clock_t end = clock();
@@ -380,9 +398,3 @@ void LinesDetector::CalculateBoundingHorizontalLine(Mat& field_mat, ushort& boun
 
 	delete[] sum_of_rows_vector; //Deallocate dyanmic array.
 }
-
-
-
-
-
-
