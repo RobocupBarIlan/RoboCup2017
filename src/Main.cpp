@@ -32,10 +32,15 @@ int main() {
 	VisionThread::GetVisionThreadInstance()->init();
 	BrainThread::GetBrainThreadInstance()->init();
 	waitRegisterSignalDone();
+<<<<<<< HEAD
 	//CommunicationThread::GetCommunicationThreadInstance()->init();
+=======
+//	CommunicationThread::GetCommunicationThreadInstance()->init();
+>>>>>>> refs/remotes/origin/Liraz
 //BrainThread::checkTiltPan(10,10);
 	//Must sleep for 3 seconds at the beginning to let the camera warm-up (clean garabage in buffer):
 	VisionThread::MillisSleep(3000); //Sleep to clean the buffer
+	VisionThread::IPM();
 
 	//Must calibrate the ball before first run!!!:
 	//VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
@@ -55,21 +60,30 @@ int main() {
 //
 //	while(1)
 //	{
-//////	//Getting data from the vision thread example:
-//
-//
-////    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
-//
+////////	//Getting data from the vision thread example:
 ////
+<<<<<<< HEAD
 ////		GoalKeepersDetector::GetGoalKeepers(g1,g2);
+=======
+>>>>>>> refs/remotes/origin/Liraz
 ////
-////		VisionThread::SafeReadGoalInFrame(gc);
+//////    	VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
 ////
+<<<<<<< HEAD
 //		VisionThread::MillisSleep(100);
 ////		//break;
+=======
+//////
+////		GoalKeepersDetector::GetGoalKeepers(g1,g2);
+//////
+//		VisionThread::SafeReadGoalInFrame(gc);
+//////
+////////		//VisionThread::MillisSleep(100);
+//////		//break;
+>>>>>>> refs/remotes/origin/Liraz
 //	}
-////
-	pthread_exit(NULL); //Exit the main thread while keeping the other threads alive.
+//////
+//	pthread_exit(NULL); //Exit the main thread while keeping the other threads alive.
 
 
 }

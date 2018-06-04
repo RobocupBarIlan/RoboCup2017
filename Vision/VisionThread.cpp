@@ -28,6 +28,137 @@ VisionThread::~VisionThread() {
 	// TODO Auto-generated destructor stub
 }
 
+void VisionThread::IPM()
+
+{
+
+	int frameWidth = 640;
+	int frameHeight = 480;
+
+	/*
+	 * This code illustrates bird's eye view perspective transformation using opencv
+	 * Paper: Distance Determination for an Automobile Environment using Inverse Perspective Mapping in OpenCV
+	 * Link to paper: https://www.researchgate.net/publication/224195999_Distance_determination_for_an_automobile_environment_using_Inverse_Perspective_Mapping_in_OpenCV
+	 * Code taken from: http://www.aizac.info/birds-eye-view-homography-using-opencv/
+	 */
+
+
+	    // get file name from the command line
+	    //string filename = argv[1];
+
+	    // capture object
+//	cout << "1";
+//	VideoCapture capture; // open the default camera
+//	cout << "2";
+//	capture.open(0);
+//	cout << "3";
+//	capture.set(CV_CAP_PROP_FPS,50);
+//	cout << "4";
+//	capture.set(cv::CAP_PROP_FRAME_WIDTH, 720);
+//	cout << "5";
+//	capture.set(cv::CAP_PROP_FRAME_HEIGHT, 405);
+//	cout << "6";
+//
+//		if (!capture.isOpened())
+//		{
+//			cout<<"Could not open VideoCapture"<<endl;
+//			pthread_exit(NULL);
+//		}
+
+
+	    // mat container to receive images
+	    Mat source, destination;
+
+//	    // check if capture was successful
+//	    if( !capture.isOpened()) throw "Error reading video";
+
+
+		int alpha_ = 90, beta_ = 90, gamma_ = 90;
+		int f_ = 500, dist_ = 500;
+
+		namedWindow("Result", 1);
+
+		createTrackbar("Alpha", "Result", &alpha_, 180);
+		createTrackbar("Beta", "Result", &beta_, 180);
+		createTrackbar("Gamma", "Result", &gamma_, 180);
+		createTrackbar("f", "Result", &f_, 2000);
+		createTrackbar("Distance", "Result", &dist_, 2000);
+int counter = 0;
+		while( true ) {
+
+			VisionThread::SafeReadeCapturedFrame(source);
+			//capture >> source;
+
+			resize(source, source,Size(frameWidth, frameHeight));
+
+			double focalLength, dist, alpha, beta, gamma;
+
+			alpha =((double)alpha_ -90) * PI/180;
+			beta =((double)beta_ -90) * PI/180;
+			gamma =((double)gamma_ -90) * PI/180;
+			focalLength = (double)f_;
+			dist = (double)dist_;
+
+			Size image_size = source.size();
+			double w = (double)image_size.width, h = (double)image_size.height;
+
+
+			// Projecion matrix 2D -> 3D
+			Mat A1 = (Mat_<float>(4, 3)<<
+				1, 0, -w/2,
+				0, 1, -h/2,
+				0, 0, 0,
+				0, 0, 1 );
+
+
+			// Rotation matrices Rx, Ry, Rz
+
+			Mat RX = (Mat_<float>(4, 4) <<
+				1, 0, 0, 0,
+				0, cos(alpha), -sin(alpha), 0,
+				0, sin(alpha), cos(alpha), 0,
+				0, 0, 0, 1 );
+
+			Mat RY = (Mat_<float>(4, 4) <<
+				cos(beta), 0, -sin(beta), 0,
+				0, 1, 0, 0,
+				sin(beta), 0, cos(beta), 0,
+				0, 0, 0, 1	);
+
+			Mat RZ = (Mat_<float>(4, 4) <<
+				cos(gamma), -sin(gamma), 0, 0,
+				sin(gamma), cos(gamma), 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1	);
+
+
+			// R - rotation matrix
+			Mat R = RX * RY * RZ;
+
+			// T - translation matrix
+			Mat T = (Mat_<float>(4, 4) <<
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, dist,
+				0, 0, 0, 1);
+
+			// K - intrinsic matrix
+			Mat K = (Mat_<float>(3, 4) <<
+				focalLength, 0, w/2, 0,
+				0, focalLength, h/2, 0,
+				0, 0, 1, 0
+				);
+
+
+			Mat transformationMat = K * (T * (R * A1));
+
+			warpPerspective(source, destination, transformationMat, image_size, INTER_CUBIC | WARP_INVERSE_MAP);
+
+			imshow("Result", destination);
+			//cout << counter++ << endl;
+			waitKey(100);
+		}
+}
 void *runVideoCapture(void *arg)
 {
 	VideoCapture cap; // open the default camera
@@ -48,7 +179,7 @@ void *runVideoCapture(void *arg)
 		while(VisionThread::IS_READING_FRAME)
 		{
 			cap>>cleaning_frame;
-		}
+		}//candidate
 		//do{VisionThread::MillisSleep(1);}while(VisionThread::IS_PROCCESSING_IMAGE);  //prevents the camera capturing from taking resources while any image proccessing is done. also lets another waiting thread (the vision thread) time for taking the mutex lock (preventing starvation).
 		VisionThread::FrameReadWriteMutex.lock();
 			cap>>VisionThread::GetVisionThreadInstance()->Frame; // get a new frame from camera
@@ -135,17 +266,17 @@ void VisionThread::RegisterSignals()
 void VisionThread::SignalCallbackHandler(int signum)
 {
 
-	switch(signum)
-	{
-		case GET_BALL_CENTER_IN_FRAME_AND_DISTANCE:
-				VisionThread::GetBallCenterInFrameAndDistance();
-				break;
-		case GET_GOAL_IN_FRAME:
-				VisionThread::GetGoalCandidate();
-			break;
-		case GET_GOALKEEPER_CENTER_IN_FRAME_AND_DISTANCE:
-			break;
-	}
+//	switch(signum)
+//	{
+//		case GET_BALL_CENTER_IN_FRAME_AND_DISTANCE:
+//				VisionThread::GetBallCenterInFrameAndDistance();
+//				break;
+//		case GET_GOAL_IN_FRAME:
+//				VisionThread::GetGoalCandidate();
+//			break;
+//		case GET_GOALKEEPER_CENTER_IN_FRAME_AND_DISTANCE:
+//			break;
+//	}
 }
 
 //Check if signals were already registered.
