@@ -578,7 +578,7 @@ void VisionThread::ScanCenterGoal()
 	GoalCandidate gc;
 	GoalDetector gd;
 	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
-	int h = -10+5;
+	int h =-10-60;
 	int pan = -36; // Possible Pan range -36 to 35.
 	int hit_counter = 0;
 	int miss_counter = 0;
