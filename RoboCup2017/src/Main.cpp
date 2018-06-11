@@ -26,6 +26,7 @@ void waitRegisterSignalDone()
 	}
 }
 
+
 int main() {
 	//Motion::GetInstance()->FreeAllEngines();
 	cout << "~~~~~~~~~~~~~~Initiating threads:~~~~~~~~~~~~~~" << endl; // prints !!!Hello World!!!
