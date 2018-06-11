@@ -9,7 +9,8 @@
 #include <opencv2/opencv.hpp>
 using namespace cv;
 
-class BallCandidateRansac {
+class BallCandidateRansac
+{
 public:
 	BallCandidateRansac(Point center,int radius,int support);
 	virtual ~BallCandidateRansac();
@@ -18,8 +19,10 @@ public:
 	int m_support; //In number of points supporting the candidate.
 
 	//Define a comparator struct for sorting a vector by support.
-	struct by_support {
-	    bool operator()(BallCandidateRansac const &a, BallCandidateRansac const &b) {
+	struct by_support
+	{
+	    bool operator()(BallCandidateRansac const &a, BallCandidateRansac const &b)
+	    {
 	        return a.m_support > b.m_support;
 	    }
 	};

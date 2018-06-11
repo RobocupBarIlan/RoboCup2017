@@ -7,23 +7,16 @@
 
 #include "BallCandidateRansac.h"
 
-
-
-
-
-
-
-
-
-
-BallCandidateRansac::BallCandidateRansac(Point center,int radius,int support) {
+BallCandidateRansac::BallCandidateRansac(Point center,int radius,int support)
+{
 	this->m_center.x=center.x;
 	this->m_center.y=center.y;
 	this->m_radius=radius;
 	this->m_support=support;
 }
 
-BallCandidateRansac::~BallCandidateRansac() {
+BallCandidateRansac::~BallCandidateRansac()
+{
 	// TODO Auto-generated destructor stub
 }
 

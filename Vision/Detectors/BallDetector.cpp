@@ -1,26 +1,23 @@
 #include "BallDetector.h"
 
-		static int call_id=0;
+static int call_id = 0;
 
 /*
  * static members init:
  */
 
-		bool BallDetector::IsFirstRun=true;
-		double BallDetector::ball_hue_histogram[HUE_QUANTIZATION];
+bool BallDetector::IsFirstRun=true;
+double BallDetector::ball_hue_histogram[HUE_QUANTIZATION];
 
-
-
-BallDetector::BallDetector() {
+BallDetector::BallDetector()
+{
 	// TODO Auto-generated constructor stub
-
 }
 
-BallDetector::~BallDetector() {
+BallDetector::~BallDetector()
+{
 	// TODO Auto-generated destructor stub
 }
-
-
 
 /*
  * This is the main method which is called by the Vision thread to detect a ball.
@@ -35,10 +32,7 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 	uchar field_min_hue, field_max_hue; //Will mark which pixel is a field pixel after calib.
 	ushort bounding_horizontal_line; //Will mark the
 	Point center;
-
-
 	VisionThread::SafeReadeCapturedFrame(frame);
-
 
 //	namedWindow("my_frame_check");
 //	imshow("original_frame",frame);
@@ -61,7 +55,6 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 			BallDetector::FieldCalibration(hsv_channels[0], field_min_hue, field_max_hue);
 			field_mat = Mat::zeros(frame.rows, frame.cols, CV_8UC1); //Generate a 1-channel matrix with size of original image (unsigned char). set all pixels to initail value 255=(11111111)_2
 			whites_mat = Mat::zeros(frame.rows, frame.cols, CV_8UC1); //Generate a 1-channel matrix with size of original image (unsigned char).
-
 
 			//Generate the field_mat and whites_mat:
 			for (int i = 0; i < frame.rows; i++)
@@ -110,9 +103,6 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 //			waitKey(1);
 			//waitKey(1);
 
-
-
-
 			Mat frame_luminance;
 			Mat frame_yuv;
 			Mat frame_edges,frame_edges_clone;
@@ -123,17 +113,13 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 
 		//	blur(frame_luminance,frame_luminance,Size(3,3));
 
-
-
 			//GaussianBlur(frame_luminance, frame_luminance, cv::Size(3, 3), 1.5,1.5);
-
 
 			//medianBlur(frame_luminance,frame_luminance,3);
 
 			GaussianBlur(frame_luminance, frame_luminance, cv::Size(3, 3), 2,2);
 			//blur(frame_luminance,frame_luminance,Size(3,3));
 			medianBlur(frame_luminance,frame_luminance,3);
-
 
 			//Unsharp:
 			Mat blurred_luminance;
@@ -143,8 +129,6 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 			GaussianBlur(frame_luminance, frame_luminance, cv::Size(3, 3), 2,2);
 			//blur(frame_luminance,frame_luminance,Size(3,3));
 			medianBlur(frame_luminance,frame_luminance,3);
-
-
 
 //			Mat grad_x, grad_y,grad;
 //			Mat abs_grad_x, abs_grad_y;
@@ -168,17 +152,12 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 //			waitKey(1);
 			//waitKey(1);
 
-
-
-
 			int thresh = 19000;
 			Canny(frame_luminance, frame_edges, thresh, thresh * 2, 7);
 //			imshow("original_frame_canny", frame_edges);
 //			waitKey(1);
 
 			frame_edges_clone = frame_edges.clone();
-
-
 //
 //			Mat whites_edges;
 //			Mat blurred_whites_mat;
@@ -200,18 +179,12 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 //			Canny(blurred_whites_mat,whites_edges,1,1,7);
 //			imshow("whites_edges",whites_edges);
 
-
-
-
-
 			//frame_edges=ev_mat_normalized;
 			//Remove space out of field:
 			//bitwise_and(frame_edges, field_space_mat, frame_edges);
 			frame_edges_clone = frame_edges.clone();
 
 			//imshow("frame_edges",frame_edges);
-
-
 
 			//Remove lines using HoughLines:
 
@@ -337,8 +310,6 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 						BallDetector::GetCircleBoundingRectangleInFrame(found_circles[i].m_center,found_circles[i].m_radius,frame.rows,frame.cols,candidate_bounding_rect);
 						if(candidate_bounding_rect.width!=-1 && candidate_bounding_rect.width>0) //If candidate's center is in frame - compute the colors correlation.
 						{
-
-
 							candidate=hsv_channels[0];
 							candidate=candidate(candidate_bounding_rect);
 
@@ -367,23 +338,17 @@ void BallDetector::GetBallCenter(Point& returned_center,int& returned_radius)
 					}
 				}
 
-
-
 				imshow("frame",frame);
 				waitKey(1);
 			//clock_t end = clock();
 			//double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 			//cout << "elapsed time:" << elapsed_secs << endl;
 
-
 			returned_center.x=-1;
 			returned_center.y=-1;
 			returned_radius=-1;
 			return;
 }
-
-
-
 
 /*This method calibrates the green field hue bounds. It takes the hue matrix and returns the- field_min_hue and field_max_hue.
 	We create the histogram of hue for the given matrix and take PERCENTAGE_THRESHOLD (=90%) in the middle of the green spectrum -
@@ -446,13 +411,6 @@ void BallDetector::FieldCalibration(Mat& hue_matrix, uchar& field_min_hue, uchar
 
 }
 
-
-
-
-
-
-
-
 /*This method calculates the bounding horizontal line of the field. i.e - it is the horizontal line which PERCENTAGE_THRESHOLD of the pixels
 marked as field by field_mat are *below*.*/
 void BallDetector::CalculateBoundingHorizontalLine(Mat& field_mat, ushort& bounding_horizontal_line)
@@ -501,7 +459,6 @@ double BallDetector::Sigmoid(double x)
 {
 	return 1/(1+exp(-1*x));
 }
-
 
 /*
 	My implementation for the Kasa algorithm:
@@ -567,8 +524,6 @@ void BallDetector::CircleFitKasa(vector<Point>& contour,Point& center, double& r
 		radius = -1;
 	}
 }
-
-
 
 /*
  * This method gets the frame_edges mat [canny & lines deletion performed on original frame] (CV_8UC1 type) and searches for a circle using the RANSAC algorithm-
@@ -694,8 +649,6 @@ void BallDetector::GetCircleBoundingRectangleInFrame(Point& center,int& radius,i
 	}
 }
 
-
-
 /*
  *This method sets the ball_hue_histogram values for the use of the CalculateBallColorsCorrelation later on to prevent misses/false alarms.
  * The values of the field_min_hue and field_max_hue are needed to delete the field's colors so we won't use them in colors correlation!.
@@ -742,8 +695,6 @@ void BallDetector::BallHistogramCalibration(Mat& hue_mat , Rect& ball_roi ,uchar
 
 }
 
-
-
 /*
  * This method gets the candidate ball hue matrix and computes the colors correlation to the user's selected ball (the user selects the ball on first call to get ball center).
  */
@@ -766,8 +717,6 @@ void BallDetector::CalculateBallColorsCorrelation(Mat& hue_mat,Rect& candidate_b
 				candidate_hue_histogram[candidate_hue.at<uchar>(i,j)]++;
 		}
 	}
-
-
 
 	//Normalize the array. first divide by rowsXcols (to prevent possible numeric errors with large numbers) and then normalize for norm_2=1:
 	double normalization_factor=candidate_hue.rows*candidate_hue.cols;
@@ -814,14 +763,10 @@ void BallDetector::CountNumFieldPixels(Mat& candidate,uchar& field_min_hue,uchar
 	}
 }
 
-
-
 void BallDetector::CalculateDistanceToBall(int& radius,double& calculated_distance)
 {
 	calculated_distance=(597.3040-18.6316*radius+0.236*pow(radius,2)-0.001*pow(radius,3));
 }
-
-
 
 //
 ////This method gets the b&w (after thresholding) field matrix after calibration and calculates the convex hull of the field.
@@ -876,4 +821,3 @@ void BallDetector::CalculateDistanceToBall(int& radius,double& calculated_distan
 //
 //
 //}
-
