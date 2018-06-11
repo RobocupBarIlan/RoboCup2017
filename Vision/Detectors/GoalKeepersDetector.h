@@ -33,7 +33,6 @@ public:
 	static	int max_hue_our_goalkeeper;
 	static	int min_value_our_goalkeeper;
 	static	int max_value_our_goalkeeper;
-
 	static	int min_hue_other_team_goalkeeper;
 	static  int max_hue_other_team_goalkeeper;
 	static 	int min_value_other_team_goalkeeper;

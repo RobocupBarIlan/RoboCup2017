@@ -26,7 +26,8 @@ void waitRegisterSignalDone()
 	}
 }
 
-int main() {
+int main()
+{
 	Motion::GetInstance()->FreeAllEngines();
 	cout << "~~~~~~~~~~~~~~Initiating threads:~~~~~~~~~~~~~~" << endl; // prints !!!Hello World!!!
 	VisionThread::GetVisionThreadInstance()->init();
@@ -40,11 +41,21 @@ int main() {
 //BrainThread::checkTiltPan(10,10);
 	//Must sleep for 3 seconds at the beginning to let the camera warm-up (clean garabage in buffer):
 	VisionThread::MillisSleep(3000); //Sleep to clean the buffer
-	VisionThread::IPM();
+	VisionThread::DetectLines();
+
+
+
+
+
+
+	//VisionThread::ScanCenterGoal(); // FOR DORON & ALON
+	//waitKey(-1);
+
+
+
 
 	//Must calibrate the ball before first run!!!:
 	//VisionThread::SafeReadBallCenterInFrameAndDistance(center_x,center_y,distance);
-
 
 //	Point center;
 //	int radius;
@@ -84,7 +95,6 @@ int main() {
 //	}
 //////
 //	pthread_exit(NULL); //Exit the main thread while keeping the other threads alive.
-
 
 }
 

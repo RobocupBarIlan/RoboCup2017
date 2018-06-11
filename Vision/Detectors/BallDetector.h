@@ -10,7 +10,6 @@
 #include <math.h>
 #include <iostream> //Only for collecting data from algorithm (log files etc...)
 #include <sstream>
-
 #include "BallCandidateRansac.h"
 #include "../VisionThread.h"
 
@@ -33,9 +32,9 @@ using namespace std;
 #define DEG_QUANTIZATION 361 //Discretization level of degrees.
 #define HUE_QUANTIZATION 180 //180 levels for the hue axis range - [0,179]
 
-class BallDetector{
+class BallDetector
+{
 public:
-
 	BallDetector();
 	virtual ~BallDetector();
 	static void GetBallCenter(Point& returned_center,int& returned_radius);
@@ -59,5 +58,3 @@ private:
 };
 
 #endif /* VISION_DETECTORS_BallDetector_H_ */
-
-

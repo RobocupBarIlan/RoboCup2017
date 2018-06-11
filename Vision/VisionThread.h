@@ -28,6 +28,10 @@
 #include <opencv2/opencv.hpp>
 #include "Detectors/BallDetector.h"
 #include "Detectors/GoalDetector.h"
+#include "Detectors/LinesDetector.h"
+#include "../Brain/Motion/Motion.h"
+#include "../Brain/BrainThread.h"
+
 //	// OpenCV imports
 //	#include <opencv2/imgproc/imgproc.hpp>
 //	#include <opencv2/highgui/highgui.hpp>
@@ -68,7 +72,29 @@ public:
     static void SignalCallbackHandler(int signum); //This method handles all the possible signals which can be sent to the vision thread.
 	static void SafeReadBallCenterInFrameAndDistance(int& center_x,int& center_y,double& distance); //This method gets - center_x,center_y,distance and sets the last calculated values safely into them.
 	static void SafeReadGoalInFrame(GoalCandidate& gc); //This method sets the last calculated values of the goal safely into gc.
-	static void IPM();
+	static Mat IPM(Mat regular, int alpha_, int dist_, int f_);
+	static Mat FetchFrame();
+	static void DetectLines();
+	static Mat Ellipse(Mat src, Mat src_gray, int thresh, int max_thresh, RNG rng);
+	static void CannyThreshold(Mat src, Mat src_gray, Mat src_hsv,
+			Mat detected_edges,
+			Mat src_gray2,
+			int edgeThresh,
+			int low_red,
+			int low_green,
+			int low_blue,
+			int high_red,
+			int high_green,
+			int high_blue,
+			int low_red2,
+			int low_green2,
+			int low_blue2,
+			int high_red2,
+			int high_green2,
+			int high_blue2,
+			int ratio,
+			int kernel_size, Mat& White_zone, Mat& Robots);
+
 	static void SafeReadeCapturedFrame(Mat& captured_frame); //This method lets another caller to read the captured by the vision thread frame safely without any data inconsistency issues.
 	void init(); //This method initiates the vision thread.
 	static bool IsRegisterSingalsDone(); //This method tells whether the RegisterSignals() method has already been called. It is crucial so we won't send signals before that is done.
@@ -76,7 +102,6 @@ public:
 	static std::atomic<bool> IS_PROCCESSING_IMAGE; //This flag indicates that a request for image processing was done and currently running. this flag prevents image capturing while proccessing to save resources.
 	static std::atomic<bool> IS_READING_FRAME; //THis flag indicates that a detector is trying to read the frame
 	virtual ~VisionThread();
-
 };
 
 #endif /* VISION_VISIONTHREAD_H_ */

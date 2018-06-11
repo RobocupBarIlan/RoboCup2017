@@ -193,14 +193,15 @@ BrainThread* BrainThread::GetBrainThreadInstance()
 
 void BrainThread::checkTiltPan(float tilt,float pan)
 {
-
 	Motion* motion = BrainThread::GetBrainThreadInstance()->getMotion();
 	motion->StartEngines();
-	VisionThread::MillisSleep(3000);
 	cout<<"StartEngines-> done"<<endl;
-	cout<<"Tilt: "<< motion->GetHeadTilt().Tilt<<" Pan: "<<motion->GetHeadTilt().Pan<<endl;
-	motion->SetHeadTilt(HeadTilt(tilt,pan));
-	cout<<"Tilt: "<< motion->GetHeadTilt().Tilt<<" Pan: "<<motion->GetHeadTilt().Pan<<endl;
+	sleep(3);
+	motion->TurnByAngle(90);
+//	cout<<"StartEngines-> done"<<endl;
+//	cout<<"Tilt: "<< motion->GetHeadTilt().Tilt<<" Pan: "<<motion->GetHeadTilt().Pan<<endl;
+//	motion->SetHeadTilt(HeadTilt(tilt,pan));
+//	cout<<"Tilt: "<< motion->GetHeadTilt().Tilt<<" Pan: "<<motion->GetHeadTilt().Pan<<endl;
 }
 
 

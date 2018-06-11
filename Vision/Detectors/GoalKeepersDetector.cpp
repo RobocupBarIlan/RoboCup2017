@@ -18,8 +18,6 @@ int GoalKeepersDetector::max_hue_other_team_goalkeeper;
 int GoalKeepersDetector::min_value_other_team_goalkeeper;
 int GoalKeepersDetector::max_value_other_team_goalkeeper;
 
-
-
 Mat frame,frame_hsv;
 Mat hsv_channels[NUM_CHANNELS]; //Will contain all 3 HSV channels splitted.
 const int MIN_CONNECTED_COMPONENT_AREA=400; //Will tell the minimum area of the connected component found to be considered as the shirt of a goal keeper. This value is heuristic.
@@ -45,6 +43,8 @@ void mouseHandlerForOurGoalKeeperCalibration(int event, int x, int y, int flags,
     	{
     		GoalKeepersDetector::max_value_our_goalkeeper=hsv_channels[2].at<uchar>(y,x);
     	}
+    	cout << "min_hue: " << GoalKeepersDetector::min_hue_our_goalkeeper << " max_hue: " << GoalKeepersDetector::max_hue_our_goalkeeper << " min value: " << GoalKeepersDetector::min_value_our_goalkeeper << endl;
+
     }
 }
 
@@ -72,8 +72,6 @@ void mouseHandlerForOtherTeamGoalKeeperCalibration(int event, int x, int y, int 
     }
 }
 
-
-
 void GoalKeepersDetector::GetGoalKeepers(Point& ourTeamGoalKeeperXY, Point& otherTeamGoalKeeperXY)
 {
 	VisionThread::SafeReadeCapturedFrame(frame); //Read safely the captured frame.
@@ -88,7 +86,6 @@ void GoalKeepersDetector::GetGoalKeepers(Point& ourTeamGoalKeeperXY, Point& othe
 
 	if(GoalKeepersDetector::IS_FIRST_RUN) //Perform calibration to both goalkeepers' t-shirts.
 	{
-
 		min_hue_our_goalkeeper=255;
 		max_hue_our_goalkeeper=0;
 		min_value_our_goalkeeper=255;
@@ -107,13 +104,13 @@ void GoalKeepersDetector::GetGoalKeepers(Point& ourTeamGoalKeeperXY, Point& othe
 		 imshow("OUR_TEAM_CALIBRATION", frame);
 
 	    // Wait until user presses 'q'
-		while((waitKey(1) & 0xFF) != 'q');
-		destroyWindow("OUR_TEAM_CALIBRATION");
+		//while((waitKey(100) & 0xFF) != 'q');
 
+		 waitKey(10000);
 
+		 destroyWindow("OUR_TEAM_CALIBRATION");
 
 		//---------------------------------------------------------------------------------------
-
 
 		 //Calibration of the other team's goalkeeper shirt:
 		 namedWindow("OTHER_TEAM_CALIBRATION", 1);
@@ -124,8 +121,11 @@ void GoalKeepersDetector::GetGoalKeepers(Point& ourTeamGoalKeeperXY, Point& othe
 		 imshow("OTHER_TEAM_CALIBRATION", frame);
 
 	    // Wait until user presses 'q'
-		while((waitKey(1) & 0xFF) != 'q');
-		destroyWindow("OTHER_TEAM_CALIBRATION");
+		//while((waitKey(1) & 0xFF) != 'q');
+		 waitKey(10000);
+
+
+		 destroyWindow("OTHER_TEAM_CALIBRATION");
 		GoalKeepersDetector::IS_FIRST_RUN=false;
 	}
 	else //No need to perform calibration. we already have the required values.
@@ -183,25 +183,17 @@ void GoalKeepersDetector::GetGoalKeepers(Point& ourTeamGoalKeeperXY, Point& othe
 	    	}
 	    }
 
-
-
 		imshow("frame",frame);
 		waitKey(1);
 	}
-
-
 }
 
-
-
-GoalKeepersDetector::GoalKeepersDetector() {
+GoalKeepersDetector::GoalKeepersDetector()
+{
 	// TODO Auto-generated constructor stub
-
 }
 
-GoalKeepersDetector::~GoalKeepersDetector() {
+GoalKeepersDetector::~GoalKeepersDetector()
+{
 	// TODO Auto-generated destructor stub
 }
-
-
-

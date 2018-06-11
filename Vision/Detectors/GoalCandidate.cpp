@@ -7,7 +7,6 @@
 
 #include "GoalCandidate.h"
 
-
 GoalCandidate::GoalCandidate(vector<Point>& left_post,vector<Point>& right_post)
 {
 	// TODO Auto-generated constructor stub
@@ -41,4 +40,3 @@ GoalCandidate::GoalCandidate()
 GoalCandidate::~GoalCandidate() {
 	// TODO Auto-generated destructor stub
 }
-
