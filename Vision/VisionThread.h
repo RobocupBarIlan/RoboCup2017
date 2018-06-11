@@ -28,6 +28,7 @@
 #include <opencv2/opencv.hpp>
 #include "Detectors/BallDetector.h"
 #include "Detectors/GoalDetector.h"
+#include "Detectors/GoalKeepersDetector.h"
 #include "Detectors/LinesDetector.h"
 #include "../Brain/Motion/Motion.h"
 #include "../Brain/BrainThread.h"
@@ -44,6 +45,17 @@ using namespace std;
 using namespace cv;
 
 #define PI 3.1415926
+#define LL 0
+#define TT 1
+#define XX 2
+#define GG 3
+#define CC 4
+#define LL1 5
+#define LL2 6
+#define LL3 7
+#define LL4 8
+
+//VisionThread::Distance_to_Goal = -1;
 class VisionThread { //Singleton - only one object should be instantiated!
 private:
 	pthread_t m_vision_thread; //Will control all the vision tasks.
@@ -62,20 +74,31 @@ private:
     VisionThread();
 
 public:
-	static Mat Frame;
+    static int Distance_to_Goal;
+    static Mat Frame;
 	enum VISION_THREAD_SIGNALS { GET_BALL_CENTER_IN_FRAME_AND_DISTANCE=2, GET_GOAL_IN_FRAME=4, GET_GOALKEEPER_CENTER_IN_FRAME_AND_DISTANCE=5};
 	static std::mutex WriteDetectedDataMutex;  //Create a mutex for calls to the vision thread - so another thread (the brain for example) won't read wrong data - i.e to make the proccess thread-safe.
 	static std::mutex FrameReadWriteMutex; //Create a mutex for reading and writing to m_frame. this should handle the data consistency issues that might occure.
 	pthread_t getVisionThread(); //Returns the vision_thread of type pthread_t class member.
 	static VisionThread* GetVisionThreadInstance(); //This method makes sure we don't create more than 1 object of this class.
     static void RegisterSignals(); //This method registers all signals which can be sent to the vision thread.
+    static void AutoImageCapture();
+    static void RobotsDetection(Mat frame);
     static void SignalCallbackHandler(int signum); //This method handles all the possible signals which can be sent to the vision thread.
 	static void SafeReadBallCenterInFrameAndDistance(int& center_x,int& center_y,double& distance); //This method gets - center_x,center_y,distance and sets the last calculated values safely into them.
 	static void SafeReadGoalInFrame(GoalCandidate& gc); //This method sets the last calculated values of the goal safely into gc.
 	static Mat IPM(Mat regular, int alpha_, int dist_, int f_);
 	static Mat FetchFrame();
+	static void ScanCenterGoal();
+	static void Localization();
+	static void CalculateJunctionDistances(vector<vector<int>> junctions, Mat ipm_image, Mat Field, vector<Point>& point_list);
+	static void Localization2(Point step, vector<vector<int>> distances_to_junctions, vector<Point>& point_list);
 	static void DetectLines();
-	static Mat Ellipse(Mat src, Mat src_gray, int thresh, int max_thresh, RNG rng);
+	static void HOG();
+	static vector<Point> ResetGuesses();
+	static void AutomaticCalibration2(Mat frame);
+	static void AutomaticCalibration(Mat frame);
+	static double Ellipse(Mat src, Mat src_gray, int thresh, int max_thresh, RNG rng, Mat& white);
 	static void CannyThreshold(Mat src, Mat src_gray, Mat src_hsv,
 			Mat detected_edges,
 			Mat src_gray2,
@@ -93,7 +116,7 @@ public:
 			int high_green2,
 			int high_blue2,
 			int ratio,
-			int kernel_size, Mat& White_zone, Mat& Robots);
+			int kernel_size, Mat& White_zone, Mat& Goal_area, Mat& Robots);
 
 	static void SafeReadeCapturedFrame(Mat& captured_frame); //This method lets another caller to read the captured by the vision thread frame safely without any data inconsistency issues.
 	void init(); //This method initiates the vision thread.
